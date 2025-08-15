@@ -1,8 +1,8 @@
-import { createConfig, http } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
-import { getDefaultConfig } from "connectkit";
+import { createConfig, http } from "wagmi"
+import { mainnet, sepolia } from "wagmi/chains"
+import { getDefaultConfig } from "connectkit"
 
-const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
 
 export const config = createConfig(
   getDefaultConfig({
@@ -22,4 +22,4 @@ export const config = createConfig(
     appUrl: "https://emerge.app",
     appIcon: "https://emerge.app/logo.png",
   })
-);
+)

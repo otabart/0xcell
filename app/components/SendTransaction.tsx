@@ -1,20 +1,19 @@
-'use client'
+"use client"
 
-import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
-import { parseEther } from 'viem'
-import { useState } from 'react'
+import {
+  useAccount,
+  useSendTransaction,
+  useWaitForTransactionReceipt,
+} from "wagmi"
+import { parseEther } from "viem"
+import { useState } from "react"
 
 export function SendTransaction() {
   const { address } = useAccount()
-  const [recipient, setRecipient] = useState('')
-  const [amount, setAmount] = useState('')
-  
-  const { 
-    data: hash,
-    error,
-    isPending,
-    sendTransaction 
-  } = useSendTransaction()
+  const [recipient, setRecipient] = useState("")
+  const [amount, setAmount] = useState("")
+
+  const { data: hash, error, isPending, sendTransaction } = useSendTransaction()
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
@@ -30,7 +29,7 @@ export function SendTransaction() {
         value: parseEther(amount),
       })
     } catch (err) {
-      console.error('Transaction error:', err)
+      console.error("Transaction error:", err)
     }
   }
 
@@ -39,7 +38,9 @@ export function SendTransaction() {
       <h2 className="text-2xl font-semibold mb-4">Send Transaction</h2>
 
       {!address ? (
-        <p className="text-gray-400 text-center">Please connect your wallet first</p>
+        <p className="text-gray-400 text-center">
+          Please connect your wallet first
+        </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -76,7 +77,11 @@ export function SendTransaction() {
             disabled={isPending || isConfirming || !recipient || !amount}
             className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 rounded-lg font-medium transition-colors disabled:cursor-not-allowed"
           >
-            {isPending ? 'Confirming...' : isConfirming ? 'Waiting for confirmation...' : 'Send Transaction'}
+            {isPending
+              ? "Confirming..."
+              : isConfirming
+                ? "Waiting for confirmation..."
+                : "Send Transaction"}
           </button>
         </form>
       )}

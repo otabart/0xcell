@@ -1,22 +1,21 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-import { parseAbi } from 'viem'
+import { useState } from "react"
+import {
+  useAccount,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+} from "wagmi"
+import { parseAbi } from "viem"
 
 export function ContractWriter() {
   const { address } = useAccount()
-  const [contractAddress, setContractAddress] = useState('')
-  const [functionName, setFunctionName] = useState('')
-  const [functionArgs, setFunctionArgs] = useState('')
-  const [abi, setAbi] = useState('')
+  const [contractAddress, setContractAddress] = useState("")
+  const [functionName, setFunctionName] = useState("")
+  const [functionArgs, setFunctionArgs] = useState("")
+  const [abi, setAbi] = useState("")
 
-  const { 
-    data: hash,
-    error,
-    isPending,
-    writeContract 
-  } = useWriteContract()
+  const { data: hash, error, isPending, writeContract } = useWriteContract()
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
@@ -24,7 +23,7 @@ export function ContractWriter() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     try {
       // Parse ABI and arguments
       const parsedAbi = parseAbi([abi])
@@ -37,16 +36,18 @@ export function ContractWriter() {
         args,
       })
     } catch (err) {
-      console.error('Contract write error:', err)
+      console.error("Contract write error:", err)
     }
   }
 
   return (
     <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
       <h2 className="text-2xl font-semibold mb-4">Write to Contract</h2>
-      
+
       {!address ? (
-        <p className="text-gray-400 text-center">Please connect your wallet first</p>
+        <p className="text-gray-400 text-center">
+          Please connect your wallet first
+        </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -71,7 +72,7 @@ export function ContractWriter() {
               type="text"
               value={abi}
               onChange={(e) => setAbi(e.target.value)}
-              placeholder='function transfer(address to, uint256 amount)'
+              placeholder="function transfer(address to, uint256 amount)"
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -109,7 +110,11 @@ export function ContractWriter() {
             disabled={isPending || isConfirming}
             className="w-full py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 rounded-lg font-medium transition-colors disabled:cursor-not-allowed"
           >
-            {isPending ? 'Confirming...' : isConfirming ? 'Waiting for confirmation...' : 'Write Contract'}
+            {isPending
+              ? "Confirming..."
+              : isConfirming
+                ? "Waiting for confirmation..."
+                : "Write Contract"}
           </button>
         </form>
       )}

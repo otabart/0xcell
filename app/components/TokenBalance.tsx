@@ -1,30 +1,30 @@
-'use client'
+"use client"
 
-import { useAccount, useBalance, useToken } from 'wagmi'
-import { formatUnits } from 'viem'
-import { useState } from 'react'
+import { useAccount, useBalance, useToken } from "wagmi"
+import { formatUnits } from "viem"
+import { useState } from "react"
 
 export function TokenBalance() {
   const { address } = useAccount()
-  const [tokenAddress, setTokenAddress] = useState('')
-  const [inputAddress, setInputAddress] = useState('')
+  const [tokenAddress, setTokenAddress] = useState("")
+  const [inputAddress, setInputAddress] = useState("")
 
   // Get token information
   const { data: tokenInfo } = useToken({
     address: tokenAddress as `0x${string}`,
-    enabled: !!tokenAddress && tokenAddress.startsWith('0x'),
+    enabled: !!tokenAddress && tokenAddress.startsWith("0x"),
   })
 
   // Get token balance
   const { data: tokenBalance } = useBalance({
     address,
     token: tokenAddress as `0x${string}`,
-    enabled: !!address && !!tokenAddress && tokenAddress.startsWith('0x'),
+    enabled: !!address && !!tokenAddress && tokenAddress.startsWith("0x"),
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (inputAddress.startsWith('0x') && inputAddress.length === 42) {
+    if (inputAddress.startsWith("0x") && inputAddress.length === 42) {
       setTokenAddress(inputAddress)
     }
   }
@@ -32,7 +32,7 @@ export function TokenBalance() {
   return (
     <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
       <h2 className="text-2xl font-semibold mb-4">ERC20 Token Balance</h2>
-      
+
       <form onSubmit={handleSubmit} className="mb-6">
         <div className="flex gap-2">
           <input
@@ -57,23 +57,26 @@ export function TokenBalance() {
             <p className="text-gray-400 text-sm">Token Name</p>
             <p className="font-semibold">{tokenInfo.name}</p>
           </div>
-          
+
           <div>
             <p className="text-gray-400 text-sm">Symbol</p>
             <p className="font-semibold">{tokenInfo.symbol}</p>
           </div>
-          
+
           <div>
             <p className="text-gray-400 text-sm">Your Balance</p>
             <p className="font-semibold text-xl">
-              {formatUnits(tokenBalance.value, tokenInfo.decimals)} {tokenInfo.symbol}
+              {formatUnits(tokenBalance.value, tokenInfo.decimals)}{" "}
+              {tokenInfo.symbol}
             </p>
           </div>
         </div>
       )}
 
       {!address && (
-        <p className="text-gray-400 text-center">Please connect your wallet first</p>
+        <p className="text-gray-400 text-center">
+          Please connect your wallet first
+        </p>
       )}
     </div>
   )

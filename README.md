@@ -53,25 +53,25 @@ To integrate your smart contracts:
 Example contract hook:
 
 ```typescript
-import { useContractRead, useContractWrite } from "wagmi";
-import { abi } from "../contracts/YourContract.json";
+import { useContractRead, useContractWrite } from "wagmi"
+import { abi } from "../contracts/YourContract.json"
 
-const contractAddress = "0x..."; // Your contract address
+const contractAddress = "0x..." // Your contract address
 
 export function useYourContract() {
   const { data: readData } = useContractRead({
     address: contractAddress,
     abi,
     functionName: "yourReadFunction",
-  });
+  })
 
   const { write } = useContractWrite({
     address: contractAddress,
     abi,
     functionName: "yourWriteFunction",
-  });
+  })
 
-  return { readData, write };
+  return { readData, write }
 }
 ```
 
