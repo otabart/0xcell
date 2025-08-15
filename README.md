@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Emerge - Web3 DApp
+
+A modern Web3 application built with Next.js, wagmi, viem, and ConnectKit.
+
+## Features
+
+- 🔗 Wallet connection with ConnectKit
+- 💰 Display wallet balance and information
+- 📊 Real-time block number updates
+- 🔄 Smart contract interaction ready
+- 🎨 Beautiful UI with Tailwind CSS
+- 📱 Responsive design
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20.12+
+- pnpm, npm or yarn
+- A Web3 wallet (MetaMask, WalletConnect, etc.)
+
+### Installation
+
+1. Clone the repository and install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create a `.env.local` file in the root directory:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Get your project ID from https://cloud.walletconnect.com/
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Run the development server:
 
-## Learn More
+```bash
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Smart Contract Integration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To integrate your smart contracts:
 
-## Deploy on Vercel
+1. Create a new file in `app/contracts/` with your contract ABI
+2. Create hooks in `app/hooks/` for contract interactions
+3. Use the hooks in your components
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Example contract hook:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```typescript
+import { useContractRead, useContractWrite } from "wagmi";
+import { abi } from "../contracts/YourContract.json";
+
+const contractAddress = "0x..."; // Your contract address
+
+export function useYourContract() {
+  const { data: readData } = useContractRead({
+    address: contractAddress,
+    abi,
+    functionName: "yourReadFunction",
+  });
+
+  const { write } = useContractWrite({
+    address: contractAddress,
+    abi,
+    functionName: "yourWriteFunction",
+  });
+
+  return { readData, write };
+}
+```
+
+## Project Structure
+
+```
+emerge/
+├── app/
+│   ├── layout.tsx      # Root layout with providers
+│   ├── page.tsx        # Home page with wallet connection
+│   ├── providers.tsx   # Web3 providers configuration
+│   ├── wagmi.ts        # Wagmi configuration
+│   └── globals.css     # Global styles
+├── public/             # Static assets
+└── package.json        # Dependencies
+```
+
+## Available Scripts
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint
+
+## Technologies Used
+
+- **Next.js 15** - React framework with App Router
+- **wagmi** - React hooks for Ethereum
+- **viem** - TypeScript interface for Ethereum
+- **ConnectKit** - Beautiful wallet connection UI
+- **Tailwind CSS** - Utility-first CSS framework
+- **TypeScript** - Type safety
+
+## Resources
+
+- [wagmi Documentation](https://wagmi.sh)
+- [viem Documentation](https://viem.sh)
+- [ConnectKit Documentation](https://docs.family.co/connectkit)
+- [Next.js Documentation](https://nextjs.org/docs)
+
+## License
+
+MIT
