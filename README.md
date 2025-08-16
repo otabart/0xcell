@@ -1,117 +1,51 @@
-# Emerge - Web3 DApp
+# Emerge
 
-A modern Web3 application built with Next.js, wagmi, viem, and ConnectKit.
+Cross-chain Conway's Game of Life. Powered by CCTP.
 
-## Features
+## What
 
-- 🔗 Wallet connection with ConnectKit
-- 💰 Display wallet balance and information
-- 📊 Real-time block number updates
-- 🔄 Smart contract interaction ready
-- 🎨 Beautiful UI with Tailwind CSS
-- 📱 Responsive design
+- **PoW → Cells**: Hash your way to unique patterns
+- **Any Chain**: Solana users playing on Ethereum? Yes.
+- **Zero UX**: Send tx. Watch cells evolve. Done.
 
-## Getting Started
+## Why
 
-### Prerequisites
+CCTP isn't just a bridge. It's cross-chain messaging infrastructure.
 
-- Node.js 20.12+
-- pnpm, npm or yarn
-- A Web3 wallet (MetaMask, WalletConnect, etc.)
+We're proving it.
 
-### Installation
+## How
 
-1. Clone the repository and install dependencies:
+```
+User (Any Chain) → CCTP Message → PoW Hash → Cell Pattern → Evolution
+```
+
+## Run
 
 ```bash
-pnpm install
+git clone https://github.com/0xashu/emerge.git
+cd emerge
+npm install
+npm run dev
 ```
 
-2. Create a `.env.local` file in the root directory:
+## Deploy
 
-```bash
-# Get your project ID from https://cloud.walletconnect.com/
-NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id_here
-```
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/emerge)
 
-3. Run the development server:
+## Stack
 
-```bash
-pnpm dev
-```
+- Next.js + TypeScript
+- CCTP Hooks
+- Solidity + Rust
+- Conway's Rules
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser.
+## Links
 
-## Smart Contract Integration
+- [Demo](#)
+- [Contracts](#)
+- [CCTP Docs](https://developers.circle.com/stablecoins/docs/cctp-getting-started)
 
-To integrate your smart contracts:
+---
 
-1. Create a new file in `app/contracts/` with your contract ABI
-2. Create hooks in `app/hooks/` for contract interactions
-3. Use the hooks in your components
-
-Example contract hook:
-
-```typescript
-import { useContractRead, useContractWrite } from "wagmi"
-import { abi } from "../contracts/YourContract.json"
-
-const contractAddress = "0x..." // Your contract address
-
-export function useYourContract() {
-  const { data: readData } = useContractRead({
-    address: contractAddress,
-    abi,
-    functionName: "yourReadFunction",
-  })
-
-  const { write } = useContractWrite({
-    address: contractAddress,
-    abi,
-    functionName: "yourWriteFunction",
-  })
-
-  return { readData, write }
-}
-```
-
-## Project Structure
-
-```
-emerge/
-├── app/
-│   ├── layout.tsx      # Root layout with providers
-│   ├── page.tsx        # Home page with wallet connection
-│   ├── providers.tsx   # Web3 providers configuration
-│   ├── wagmi.ts        # Wagmi configuration
-│   └── globals.css     # Global styles
-├── public/             # Static assets
-└── package.json        # Dependencies
-```
-
-## Available Scripts
-
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm lint` - Run ESLint
-
-## Technologies Used
-
-- **Next.js 15** - React framework with App Router
-- **wagmi** - React hooks for Ethereum
-- **viem** - TypeScript interface for Ethereum
-- **ConnectKit** - Beautiful wallet connection UI
-- **Tailwind CSS** - Utility-first CSS framework
-- **TypeScript** - Type safety
-
-## Resources
-
-- [wagmi Documentation](https://wagmi.sh)
-- [viem Documentation](https://viem.sh)
-- [ConnectKit Documentation](https://docs.family.co/connectkit)
-- [Next.js Documentation](https://nextjs.org/docs)
-
-## License
-
-MIT
+Permissionless. Cross-chain. Beautiful chaos.
