@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.85.3",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "connectkit": "^1.9.1",
     "next": "15.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-syntax-highlighter": "^15.6.1",
     "viem": "^2.33.3",
     "wagmi": "^2.16.3"
   },

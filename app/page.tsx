@@ -6,6 +6,7 @@ import GameOfLife from "./components/GameOfLife"
 import { type Pattern } from "./components/CellSelector"
 import SelectedCellDisplay from "./components/SelectedCellDisplay"
 import ProofOfWork from "./components/ProofOfWork"
+import CCTPMessage from "./components/CCTPMessage"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
@@ -51,8 +52,15 @@ export default function Home() {
           <ProofOfWork onPatternGenerated={setSelectedPattern} />
         </div>
 
+        {/* CCTP Message Section */}
+        <div className="w-full max-w-2xl mb-8">
+          <h2 className="text-lg font-mono uppercase mb-4">#2 CCTP Message</h2>
+          <CCTPMessage />
+        </div>
+
         {/* Game */}
         <div className="mb-8">
+          <h2 className="text-lg font-mono uppercase mb-4">#3 Play Game</h2>
           <GameOfLife />
         </div>
       </main>

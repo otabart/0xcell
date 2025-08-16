@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Emerge - Conway's Game of Life",
-  description: "An interactive cellular automaton with Web3 integration",
+  title: "0xCell - On-Chain Conway's Game of Life",
+  description:
+    "Built on proof of work, cross-chain messaging, and generative art. Unlocking the possibilities of Circle's CCTP. Beyond payments, CCTP enables applications and games. Solana users can interact with Ethereum, passing arbitrary messages.",
 }
 
 export default function RootLayout({
