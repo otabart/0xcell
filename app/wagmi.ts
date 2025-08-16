@@ -18,7 +18,7 @@ export const config = createConfig(
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "",
     appName: "Emerge",
     appDescription: "Your Web3 App with ConnectKit",
-    appUrl: "https://emerge.app",
-    appIcon: "https://emerge.app/logo.png",
+    appUrl: "https://0xcell.vercel.app",
+    appIcon: "https://0xcell.vercel.app/logo.png",
   })
 )
