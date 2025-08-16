@@ -36,9 +36,7 @@ export function ContractReader() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Contract Address
-          </label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Contract Address</label>
           <input
             type="text"
             value={contractAddress}
@@ -53,9 +51,7 @@ export function ContractReader() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Function ABI
-          </label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Function ABI</label>
           <input
             type="text"
             value={abi}
@@ -70,9 +66,7 @@ export function ContractReader() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Function Name
-          </label>
+          <label className="block text-sm font-medium text-gray-400 mb-2">Function Name</label>
           <input
             type="text"
             value={functionName}
@@ -114,9 +108,7 @@ export function ContractReader() {
       {shouldRead && data !== undefined && (
         <div className="mt-4 p-4 bg-gray-700 rounded-lg">
           <p className="text-sm text-gray-400 mb-2">Result:</p>
-          <p className="font-mono text-sm break-all">
-            {JSON.stringify(data, null, 2)}
-          </p>
+          <p className="font-mono text-sm break-all">{JSON.stringify(data, null, 2)}</p>
         </div>
       )}
 

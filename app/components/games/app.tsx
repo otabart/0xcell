@@ -55,11 +55,7 @@ export class App extends React.Component<IAppProps, IAppState> {
             />
           </div>
           <div className="control-group">
-            <Slider
-              id="slider"
-              value={this.state.speed}
-              onChange={this.adjustSpeed}
-            />
+            <Slider id="slider" value={this.state.speed} onChange={this.adjustSpeed} />
           </div>
         </div>
         <Grid cells={this.state.cells} onMouseDown={this.flip} />
@@ -109,10 +105,7 @@ export class App extends React.Component<IAppProps, IAppState> {
     // Keep in mind that we’ve just updated isPlaying to the new state
     if (isPlaying) {
       this.setState({
-        animation: setInterval(
-          this.evolve,
-          App.determineInterval(this.state.speed)
-        ),
+        animation: setInterval(this.evolve, App.determineInterval(this.state.speed)),
       })
     } else {
       clearInterval(this.state.animation)

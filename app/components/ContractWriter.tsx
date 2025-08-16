@@ -1,11 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {
-  useAccount,
-  useWriteContract,
-  useWaitForTransactionReceipt,
-} from "wagmi"
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
 import { parseAbi } from "viem"
 
 export function ContractWriter() {
@@ -45,15 +41,11 @@ export function ContractWriter() {
       <h2 className="text-2xl font-semibold mb-4">Write to Contract</h2>
 
       {!address ? (
-        <p className="text-gray-400 text-center">
-          Please connect your wallet first
-        </p>
+        <p className="text-gray-400 text-center">Please connect your wallet first</p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Contract Address
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Contract Address</label>
             <input
               type="text"
               value={contractAddress}
@@ -65,9 +57,7 @@ export function ContractWriter() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Function ABI
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Function ABI</label>
             <input
               type="text"
               value={abi}
@@ -79,9 +69,7 @@ export function ContractWriter() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Function Name
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Function Name</label>
             <input
               type="text"
               value={functionName}

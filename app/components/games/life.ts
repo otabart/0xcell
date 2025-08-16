@@ -29,11 +29,7 @@ export class Game {
    * @param seed    Must be able to contain values. Its size must not exceed
    *                the size of the grid.
    */
-  private static checkConstructorParameters(
-    rows: number,
-    columns: number,
-    seed: Grid
-  ): void {
+  private static checkConstructorParameters(rows: number, columns: number, seed: Grid): void {
     if (rows <= 0 || columns <= 0) {
       throw new Error("Row and column count must be positive integers")
     }
@@ -235,11 +231,7 @@ export class Game {
    * @param column      Column of the cell that will be updated.
    * @param activeCells Number of active cells in and around the current cell.
    */
-  private updateCell = (
-    row: number,
-    column: number,
-    activeCells: number
-  ): void => {
+  private updateCell = (row: number, column: number, activeCells: number): void => {
     // Conditions are very good, so the cell becomes alive (if it isn’t already)
     if (activeCells === 3) {
       this.nextGrid[row][column] = true

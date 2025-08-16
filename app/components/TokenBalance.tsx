@@ -66,18 +66,13 @@ export function TokenBalance() {
           <div>
             <p className="text-gray-400 text-sm">Your Balance</p>
             <p className="font-semibold text-xl">
-              {formatUnits(tokenBalance.value, tokenInfo.decimals)}{" "}
-              {tokenInfo.symbol}
+              {formatUnits(tokenBalance.value, tokenInfo.decimals)} {tokenInfo.symbol}
             </p>
           </div>
         </div>
       )}
 
-      {!address && (
-        <p className="text-gray-400 text-center">
-          Please connect your wallet first
-        </p>
-      )}
+      {!address && <p className="text-gray-400 text-center">Please connect your wallet first</p>}
     </div>
   )
 }

@@ -15,8 +15,7 @@ export const config = createConfig(
         ? http(`https://eth-sepolia.g.alchemy.com/v2/${alchemyApiKey}`)
         : http(),
     },
-    walletConnectProjectId:
-      process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "",
+    walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "",
     appName: "Emerge",
     appDescription: "Your Web3 App with ConnectKit",
     appUrl: "https://emerge.app",

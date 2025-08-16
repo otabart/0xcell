@@ -28,11 +28,7 @@ export const Grid = (props: IGridProps) => {
    * @param column Column of the grid.
    * @param value  Whether the cell is active or not.
    */
-  const renderCell = (
-    row: number,
-    column: number,
-    value: boolean
-  ): React.JSX.Element => {
+  const renderCell = (row: number, column: number, value: boolean): React.JSX.Element => {
     const key = row + "_" + column
     return (
       <td

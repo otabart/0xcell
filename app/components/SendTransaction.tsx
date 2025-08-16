@@ -1,10 +1,6 @@
 "use client"
 
-import {
-  useAccount,
-  useSendTransaction,
-  useWaitForTransactionReceipt,
-} from "wagmi"
+import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from "wagmi"
 import { parseEther } from "viem"
 import { useState } from "react"
 
@@ -38,9 +34,7 @@ export function SendTransaction() {
       <h2 className="text-2xl font-semibold mb-4">Send Transaction</h2>
 
       {!address ? (
-        <p className="text-gray-400 text-center">
-          Please connect your wallet first
-        </p>
+        <p className="text-gray-400 text-center">Please connect your wallet first</p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -58,9 +52,7 @@ export function SendTransaction() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Amount (ETH)
-            </label>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Amount (ETH)</label>
             <input
               type="number"
               step="0.001"

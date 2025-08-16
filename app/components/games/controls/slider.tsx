@@ -20,8 +20,8 @@ export class Slider extends React.Component<ISliderProps, ISliderState> {
 
   public render = () => {
     return (
-      <label>
-        Speed:
+      <>
+        <label htmlFor={this.props.id}>Speed:</label>
         <input
           id={this.props.id}
           type="range"
@@ -30,7 +30,8 @@ export class Slider extends React.Component<ISliderProps, ISliderState> {
           value={this.state.value}
           onChange={this.handleChange}
         />
-      </label>
+        <span className="speed-value">{this.state.value}</span>
+      </>
     )
   }
 
