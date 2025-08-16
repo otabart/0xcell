@@ -6,12 +6,10 @@ import GameOfLife from "./components/GameOfLife"
 import { type Pattern } from "./components/CellSelector"
 import SelectedCellDisplay from "./components/SelectedCellDisplay"
 import ProofOfWork from "./components/ProofOfWork"
-import PatternCollection from "./components/PatternCollection"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
   const [selectedPattern, setSelectedPattern] = useState<Pattern | undefined>()
-  const [minedPatterns, setMinedPatterns] = useState<Pattern[]>([])
 
   useEffect(() => {
     setMounted(true)
@@ -23,33 +21,39 @@ export default function Home() {
     <div className="min-h-screen bg-gray-900 text-gray-100">
       {/* Main Content */}
       <main className="min-h-screen flex flex-col items-center px-6 py-12 pb-24">
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h2 className="text-6xl md:text-8xl font-bold font-mono tracking-tight mb-4">0XCELL</h2>
-          <p className="text-gray-500 text-sm tracking-widest uppercase">
-            Conway&apos;s Game of Life
+        {/* Introduction */}
+        <div className="text-left max-w-2xl mx-auto mb-12 space-y-2 text-gray-400 text-sm leading-relaxed">
+          <p>
+            <span className="text-white font-bold font-mono text-lg">0xcell</span> is an{" "}
+            <span className="text-blue-400 font-medium">on-chain Conway&apos;s Game of Life</span>.
           </p>
-        </div>
 
-        {/* Mining Section */}
-        <div className="w-full max-w-4xl mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Proof of Work Mining */}
-          <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-            <ProofOfWork
-              onPatternGenerated={(pattern) => {
-                setSelectedPattern(pattern)
-                setMinedPatterns((prev) => [...prev, pattern])
-              }}
-            />
-          </div>
+          <p>
+            Built on <span className="text-purple-400">proof of work</span>,{" "}
+            <span className="text-cyan-400">cross-chain messaging</span>, and{" "}
+            <span className="text-pink-400">generative art</span>.
+          </p>
 
-          {/* Pattern Collection Stats */}
-          <PatternCollection minedPatterns={minedPatterns} />
+          <p>
+            Unlocking the possibilities of <span className="text-green-400">Circle's CCTP</span>.
+            Beyond payments, CCTP enables applications and games.
+            <br />
+            <span className="text-orange-400">Solana</span> users can interact with{" "}
+            <span className="text-blue-400">Ethereum</span>, passing{" "}
+            <span className="text-purple-300">arbitrary messages</span>.
+          </p>
         </div>
 
         {/* Game */}
         <div className="mb-8">
           <GameOfLife />
+        </div>
+
+        {/* Mining Section */}
+        <div className="w-full max-w-2xl mb-8">
+          <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+            <ProofOfWork onPatternGenerated={setSelectedPattern} />
+          </div>
         </div>
 
         {/* Minimal Instructions */}
