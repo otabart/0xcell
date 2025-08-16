@@ -23,7 +23,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="min-h-screen flex flex-col items-center px-6 py-12 pb-24">
         {/* Introduction */}
-        <div className="text-left max-w-2xl mx-auto mb-12 space-y-2 text-gray-400 text-sm leading-relaxed">
+        <div className="text-left max-w-2xl mx-auto mb-24 space-y-2 text-gray-400 text-sm leading-relaxed">
           <p>
             <span className="text-white font-bold font-mono text-lg">0xcell</span> is an{" "}
             <span className="text-blue-400 font-medium">on-chain Conway&apos;s Game of Life</span>.
@@ -47,20 +47,20 @@ export default function Home() {
         </div>
 
         {/* Proof of Work */}
-        <div className="w-full max-w-2xl mb-8">
+        <div className="w-full max-w-2xl mb-16">
           <h2 className="text-lg font-mono uppercase">#1 Mining</h2>
           <ProofOfWork onPatternGenerated={setSelectedPattern} />
         </div>
 
         {/* CCTP Message Section */}
-        <div className="w-full max-w-2xl mb-8">
+        <div className="w-full max-w-2xl mb-16">
           <h2 className="text-lg font-mono uppercase mb-4">#2 CCTP Message</h2>
           <CCTPMessage />
         </div>
 
         {/* Game */}
-        <div className="mb-8">
-          <h2 className="text-lg font-mono uppercase mb-4">#3 Play Game</h2>
+        <div className="mb-16">
+          <h2 className="max-w-2xl mx-auto text-lg font-mono uppercase mb-4">#3 Play Game</h2>
           <GameOfLife />
         </div>
       </main>

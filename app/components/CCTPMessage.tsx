@@ -41,19 +41,19 @@ export default function CCTPMessage() {
   const [txStatus, setTxStatus] = useState<string>("")
 
   // Demo data
-  const demoData = {
-    usdcAmount: 100 * 1e6, // 100 USDC with 6 decimals
-    userAddress: address || "0x742d35Cc6634C0532925a3b844Bc9e7595f7Fd1f",
-    coordinates: { x: 30, y: 30 },
-  }
+  // const demoData = {
+  //   usdcAmount: 100 * 1e6, // 100 USDC with 6 decimals
+  //   userAddress: address || "0x742d35Cc6634C0532925a3b844Bc9e7595f7Fd1f",
+  //   coordinates: { x: 30, y: 30 },
+  // }
 
   // Generate encoded message
-  const getEncodedMessage = (): string => {
-    const coordinates = (BigInt(demoData.coordinates.x) << 128n) | BigInt(demoData.coordinates.y)
-    return `0x${demoData.usdcAmount.toString(16).padStart(64, "0")}${demoData.userAddress
-      .slice(2)
-      .padStart(64, "0")}${coordinates.toString(16).padStart(64, "0")}`
-  }
+  // const getEncodedMessage = (): string => {
+  //   const coordinates = (BigInt(demoData.coordinates.x) << 128n) | BigInt(demoData.coordinates.y)
+  //   return `0x${demoData.usdcAmount.toString(16).padStart(64, "0")}${demoData.userAddress
+  //     .slice(2)
+  //     .padStart(64, "0")}${coordinates.toString(16).padStart(64, "0")}`
+  // }
 
   // Simulate sending CCTP message
   const sendCCTPMessage = async () => {
@@ -92,7 +92,7 @@ export default function CCTPMessage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setSelectedTab(tab.id as any)}
+              onClick={() => setSelectedTab(tab.id as "encode" | "decode" | "process")}
               className={`py-2 w-24 cursor-pointer text-xs transition-all flex flex-col items-start ${
                 selectedTab === tab.id
                   ? "text-white border-b-2 border-white"
@@ -110,7 +110,7 @@ export default function CCTPMessage() {
         </div>
 
         {/* Code Display */}
-        <div className="overflow-hidden" style={{ backgroundColor: "lch(10 0 272)" }}>
+        <div className="overflow-hidden">
           <SyntaxHighlighter
             language="solidity"
             style={tomorrow}
