@@ -270,4 +270,4 @@ export default function CellSelector({ selectedPattern, onSelectPattern }: Patte
   )
 }
 
-export { patterns, type Pattern }
+export { patterns }

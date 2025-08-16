@@ -35,8 +35,9 @@ export default function Home() {
           </p>
 
           <p>
-            Unlocking the possibilities of <span className="text-green-400">Circle's CCTP</span>.
-            Beyond payments, CCTP enables applications and games.
+            Unlocking the possibilities of{" "}
+            <span className="text-green-400">Circle&apos;s CCTP</span>. Beyond payments, CCTP
+            enables applications and games.
             <br />
             <span className="text-orange-400">Solana</span> users can interact with{" "}
             <span className="text-blue-400">Ethereum</span>, passing{" "}

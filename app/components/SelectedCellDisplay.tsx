@@ -20,8 +20,8 @@ function SimplePatternPreview({ pattern }: { pattern: number[][] }) {
   return (
     <div
       className="inline-grid gap-px p-1 rounded"
-      style={{ backgroundColor: "lch(30 0 272)" }}
       style={{
+        backgroundColor: "lch(30 0 272)",
         gridTemplateColumns: `repeat(${displayPattern[0]?.length || 1}, ${cellSize}px)`,
         gridTemplateRows: `repeat(${displayPattern.length}, ${cellSize}px)`,
       }}
@@ -31,8 +31,11 @@ function SimplePatternPreview({ pattern }: { pattern: number[][] }) {
           <div
             key={`${x}-${y}`}
             className={`${cell ? "bg-gray-100" : ""}`}
-            style={{ backgroundColor: cell ? undefined : "lch(15 0 272)" }}
-            style={{ width: `${cellSize}px`, height: `${cellSize}px` }}
+            style={{
+              backgroundColor: cell ? undefined : "lch(15 0 272)",
+              width: `${cellSize}px`,
+              height: `${cellSize}px`,
+            }}
           />
         ))
       )}
