@@ -1,7 +1,7 @@
 /**
  * A grid holds information about a rectangular group of cells
  */
-export type Grid = boolean[][]
+export type Grid = number[][]
 
 /**
  * Simple, non-vectorised implementation of Conway’s Game of Life (also simply
