@@ -34,16 +34,21 @@ export const Grid = (props: IGridProps) => {
       <td
         id={"cell_" + key}
         key={key}
-        className={"cell" + (value ? " -is-active" : "")}
+        className={`border border-gray-700/30 transition-colors duration-150 cursor-pointer ${
+          value
+            ? "bg-gray-100/90 border-gray-400/50"
+            : "bg-gray-800/30 hover:bg-gray-700/50 hover:border-gray-600/50"
+        }`}
+        style={{ width: "10px", height: "10px", padding: 0 }}
         onMouseDown={props.onMouseDown(row, column)}
       >
-        {value}
+        <span className="sr-only">{value}</span>
       </td>
     )
   }
 
   return (
-    <table className="game-grid">
+    <table className="border-collapse mx-auto border border-gray-600/50">
       <tbody>{renderGrid(props.cells)}</tbody>
     </table>
   )

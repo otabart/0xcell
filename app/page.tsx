@@ -18,7 +18,7 @@ export default function Home() {
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen text-gray-100" style={{ backgroundColor: "lch(2.467 0 272)" }}>
       {/* Main Content */}
       <main className="min-h-screen flex flex-col items-center px-6 py-12 pb-24">
         {/* Introduction */}
@@ -44,27 +44,23 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Proof of Work */}
+        <div className="w-full max-w-2xl mb-8">
+          <h2 className="text-lg font-mono uppercase">#1 Mining</h2>
+          <ProofOfWork onPatternGenerated={setSelectedPattern} />
+        </div>
+
         {/* Game */}
         <div className="mb-8">
           <GameOfLife />
         </div>
-
-        {/* Mining Section */}
-        <div className="w-full max-w-2xl mb-8">
-          <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-            <ProofOfWork onPatternGenerated={setSelectedPattern} />
-          </div>
-        </div>
-
-        {/* Minimal Instructions */}
-        <div className="text-center text-gray-600 text-sm max-w-md">
-          <p className="mb-2">Mine patterns using Proof of Work hashing</p>
-          <p>Click on the grid to place your mined patterns</p>
-        </div>
       </main>
 
       {/* Fixed Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-sm bg-gray-900/90 border-t border-gray-700">
+      <div
+        className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-sm border-t border-gray-700"
+        style={{ backgroundColor: "lch(2.467 0 272 / 0.9)" }}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           {/* Left Side - Selected Cell Display */}
           <div className="flex-1">

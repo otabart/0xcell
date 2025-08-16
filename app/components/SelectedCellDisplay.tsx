@@ -19,7 +19,8 @@ function SimplePatternPreview({ pattern }: { pattern: number[][] }) {
 
   return (
     <div
-      className="inline-grid gap-px bg-gray-700 p-1 rounded"
+      className="inline-grid gap-px p-1 rounded"
+      style={{ backgroundColor: "lch(30 0 272)" }}
       style={{
         gridTemplateColumns: `repeat(${displayPattern[0]?.length || 1}, ${cellSize}px)`,
         gridTemplateRows: `repeat(${displayPattern.length}, ${cellSize}px)`,
@@ -29,7 +30,8 @@ function SimplePatternPreview({ pattern }: { pattern: number[][] }) {
         row.map((cell, x) => (
           <div
             key={`${x}-${y}`}
-            className={`${cell ? "bg-gray-100" : "bg-gray-800"}`}
+            className={`${cell ? "bg-gray-100" : ""}`}
+            style={{ backgroundColor: cell ? undefined : "lch(15 0 272)" }}
             style={{ width: `${cellSize}px`, height: `${cellSize}px` }}
           />
         ))
@@ -51,7 +53,10 @@ export default function SelectedCellDisplay({ selectedPattern }: SelectedCellDis
     <div className="flex items-center gap-3">
       <span className="text-gray-400 text-xs uppercase tracking-wider">Selected:</span>
 
-      <div className="flex items-center gap-2 bg-gray-800 rounded px-3 py-2">
+      <div
+        className="flex items-center gap-2 rounded px-3 py-2"
+        style={{ backgroundColor: "lch(15 0 272)" }}
+      >
         <SimplePatternPreview pattern={selectedPattern.pattern} />
 
         <div className="text-sm">

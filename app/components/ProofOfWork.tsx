@@ -222,10 +222,6 @@ export default function ProofOfWork({
           const customPattern = createCustomPattern(pattern, hash, prev.difficulty)
           const miningTime = prev.startTime ? (Date.now() - prev.startTime) / 1000 : 0
 
-          if (customPattern && onPatternGenerated) {
-            onPatternGenerated(customPattern)
-          }
-
           return {
             ...prev,
             isHashing: false,
@@ -247,16 +243,19 @@ export default function ProofOfWork({
     }, 200) // Update every 200ms for more realistic mining speed
 
     return () => clearInterval(interval)
-  }, [state.isHashing, onPatternGenerated])
+  }, [state.isHashing])
+
+  // Notify parent component when a pattern is successfully mined
+  useEffect(() => {
+    if (state.matchedPattern && !state.isHashing && onPatternGenerated) {
+      onPatternGenerated(state.matchedPattern)
+    }
+  }, [state.matchedPattern, state.isHashing, onPatternGenerated])
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-gray-400 text-sm uppercase tracking-wider text-center">
-        Proof of Work Pattern Mining
-      </h3>
-
+    <div className="space-y-2">
       {/* Controls */}
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-left py-4">
         <button
           onClick={state.isHashing ? stopHashing : startHashing}
           className={`
@@ -273,133 +272,97 @@ export default function ProofOfWork({
       </div>
 
       {/* Hash Display */}
-      <div className="space-y-3 text-center">
-        <div className="flex justify-center gap-6 text-xs">
-          <div className="text-gray-400">
-            Nonce:{" "}
-            <span className="text-gray-100 font-mono">
-              {state.nonce.toString().padStart(6, "0")}
-            </span>
-          </div>
-          {state.isHashing && (
-            <div className="text-gray-400">
-              Hashrate: <span className="text-gray-100 font-mono">100 H/s</span>
-            </div>
-          )}
-        </div>
-
-        {/* Long hash display with better visual formatting */}
-        <div className="bg-gray-900 p-4 rounded border border-gray-700 overflow-hidden">
-          <div className="text-[11px] text-gray-500 mb-2">Current Hash:</div>
-          <div className="font-mono text-xs break-all leading-relaxed">
-            {state.currentHash ? (
-              <>
-                <span className="text-gray-400">{state.currentHash.slice(0, 16)}</span>
-                <span className="text-gray-500">{state.currentHash.slice(16, 32)}</span>
-                <span className="text-gray-400">{state.currentHash.slice(32, 48)}</span>
-                <span className="text-gray-500">
-                  {state.currentHash.slice(48, -state.difficulty)}
-                </span>
-                <span className="text-yellow-400 font-bold">
-                  {state.currentHash.slice(-state.difficulty)}
-                </span>
-              </>
-            ) : (
-              <span className="text-gray-600">{"0".repeat(64)}</span>
-            )}
-          </div>
-          {state.isHashing && (
-            <div className="text-[10px] text-blue-400 mt-2 animate-pulse">
-              Mining... Looking for: "000" or "00" + ending "0"
-            </div>
+      <div className="text-left">
+        <div className="font-mono text-3xl break-all leading-tight">
+          {state.currentHash ? (
+            <>
+              <span className="text-gray-400">{state.currentHash.slice(0, 16)}</span>
+              <span className="text-gray-500">{state.currentHash.slice(16, 32)}</span>
+              <span className="text-gray-400">{state.currentHash.slice(32, 48)}</span>
+              <span className="text-gray-500">
+                {state.currentHash.slice(48, -state.difficulty)}
+              </span>
+              <span className="text-yellow-400 font-bold">
+                {state.currentHash.slice(-state.difficulty)}
+              </span>
+            </>
+          ) : (
+            <span className="text-gray-600">{"0".repeat(64)}</span>
           )}
         </div>
       </div>
 
       {/* Fixed Size Pattern Display Area */}
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-12">
         <div
-          className="bg-gray-900 border border-gray-700 flex items-center justify-center"
+          className="border border-gray-700/50 flex items-center justify-center"
           style={{ width: "200px", height: "200px" }}
         >
-          {state.generatedPattern ? (
-            <div
-              className="inline-grid gap-1"
-              style={{
-                gridTemplateColumns: `repeat(5, 24px)`,
-                gridTemplateRows: `repeat(5, 24px)`,
-              }}
-            >
-              {state.generatedPattern.map((row, y) =>
-                row.map((cell, x) => (
-                  <div
-                    key={`${x}-${y}`}
-                    className={`transition-all duration-200 ${
-                      cell ? (state.isHashing ? "bg-blue-400" : "bg-white") : "bg-gray-800"
-                    }`}
-                    style={{ width: "24px", height: "24px" }}
-                  />
-                ))
-              )}
-            </div>
-          ) : (
-            <div className="text-gray-600 text-sm">Click "Start Mining" to generate patterns</div>
-          )}
+          <div
+            className="inline-grid gap-1"
+            style={{
+              gridTemplateColumns: `repeat(5, 24px)`,
+              gridTemplateRows: `repeat(5, 24px)`,
+            }}
+          >
+            {(
+              state.generatedPattern || [
+                [0, 1, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [1, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+              ]
+            ).map((row, y) =>
+              row.map((cell, x) => (
+                <div
+                  key={`${x}-${y}`}
+                  className="transition-all duration-200"
+                  style={{
+                    backgroundColor: cell
+                      ? state.isHashing
+                        ? "rgba(156, 163, 175, 0.8)"
+                        : "rgba(229, 231, 235, 0.9)"
+                      : "lch(15 0 272)",
+                  }}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Mining Status */}
-      {state.isHashing && (
-        <div className="flex items-center justify-center gap-2">
-          <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-          <span className="text-xs text-gray-400">Mining for patterns...</span>
-        </div>
-      )}
-
-      {/* Result */}
-      {state.matchedPattern && !state.isHashing && (
-        <div className="relative overflow-hidden p-4 bg-gray-800 space-y-2 text-center rounded animate-pulse">
-          {/* Success glow effect */}
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              background: `radial-gradient(circle, ${state.matchedPattern.glowColor} 0%, transparent 70%)`,
-            }}
-          />
-
-          <div className="relative z-10">
-            <div className="text-sm text-green-400 font-bold animate-bounce">
-              ✨ Block Found! ✨
-            </div>
-            <div className="text-xs text-gray-300 mt-2">
-              Pattern: <span className="text-white font-semibold">{state.matchedPattern.name}</span>
-            </div>
-            <div className="text-xs text-gray-400">
-              Rarity: {"⭐".repeat(state.matchedPattern.rarity)} • Type:{" "}
-              {state.matchedPattern.category}
-            </div>
-            {state.miningTime && (
-              <div className="text-xs text-gray-500 mt-1">
-                Mined in {state.miningTime.toFixed(1)}s • {state.nonce} hashes
-              </div>
-            )}
-            <div className="text-[10px] text-gray-600 mt-1">
-              Valid hash found:{" "}
-              {state.currentHash.includes("000") ? "Triple zeros! 🎯" : "Double zeros + ending 0"}
-            </div>
-
-            {state.matchedPattern.rarity >= 4 && (
-              <div className="mt-2 text-yellow-400 text-xs font-bold animate-pulse">
-                🎉 Rare Pattern Found! 🎉
-              </div>
-            )}
-
-            <div className="text-[10px] text-gray-500 mt-3">
-              Click on the game grid to place this pattern
-            </div>
+      {/* Result - Minimalist single line */}
+      <div className="h-12 flex items-center justify-center text-xs font-mono">
+        {state.matchedPattern && !state.isHashing ? (
+          <div className="flex items-center gap-4 text-gray-400 font-mono">
+            <span className="text-green-400">✓</span>
+            <span className="text-gray-500">NFT</span>
+            <span className="text-white uppercase">#{state.matchedPattern.id.slice(0, 8)}</span>
+            <span className="text-gray-600">|</span>
+            <span>
+              <span className="text-gray-500">Nonce</span>{" "}
+              <span className="text-gray-300">{state.nonce}</span>
+            </span>
+            <span className="text-gray-600">|</span>
+            <span>
+              <span className="text-gray-500">Time</span>{" "}
+              <span className="text-gray-300">{state.miningTime?.toFixed(1)}s</span>
+            </span>
+            <span className="text-gray-600">|</span>
+            <span>
+              <span className="text-gray-500">Rarity</span>{" "}
+              <span
+                className={state.matchedPattern.rarity >= 4 ? "text-yellow-400" : "text-gray-300"}
+              >
+                {"★".repeat(state.matchedPattern.rarity)}
+              </span>
+            </span>
           </div>
-        </div>
-      )}
+        ) : (
+          <span className="text-gray-500">{state.isHashing ? "Mining..." : "Ready to Mine"}</span>
+        )}
+      </div>
     </div>
   )
 }

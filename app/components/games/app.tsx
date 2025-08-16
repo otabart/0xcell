@@ -42,9 +42,12 @@ export class App extends React.Component<IAppProps, IAppState> {
 
   public render() {
     return (
-      <div className="game-app">
-        <div className="game-controls">
-          <div className="control-group">
+      <div
+        className="p-6 border border-gray-700/50 rounded-sm"
+        style={{ backgroundColor: "lch(2.467 0 272)" }}
+      >
+        <div className="mb-8 flex justify-center gap-8 flex-wrap">
+          <div className="flex items-center gap-4">
             <Button id="resetButton" label="Reset" onClick={this.reset} />
             <Button id="nextButton" label="Next" onClick={this.next} />
             <Button
