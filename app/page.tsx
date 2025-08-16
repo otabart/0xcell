@@ -7,6 +7,7 @@ import { type Pattern } from "./components/CellSelector"
 import SelectedCellDisplay from "./components/SelectedCellDisplay"
 import ProofOfWork from "./components/ProofOfWork"
 import CCTPMessage from "./components/CCTPMessage"
+import Image from "next/image"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
@@ -20,8 +21,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen text-gray-100">
+      <header className="w-full max-w-2xl mx-auto mt-16 h-[200px] relative">
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+          <Image src="/logo.png" alt="0xcell" width={500} height={500} />
+        </div>
+      </header>
       {/* Main Content */}
-      <main className="min-h-screen flex flex-col items-center px-6 py-12 pb-24">
+      <main className="min-h-screen flex flex-col items-center px-6 py-12">
         {/* Introduction */}
         <div className="text-left max-w-2xl mx-auto mb-24 space-y-2 text-gray-400 text-sm leading-relaxed">
           <p>
@@ -47,20 +53,20 @@ export default function Home() {
         </div>
 
         {/* Proof of Work */}
-        <div className="w-full max-w-2xl mb-16">
+        <div className="w-full max-w-2xl mb-24">
           <h2 className="text-lg font-mono uppercase">#1 Mining</h2>
           <ProofOfWork onPatternGenerated={setSelectedPattern} />
         </div>
 
         {/* CCTP Message Section */}
-        <div className="w-full max-w-2xl mb-16">
+        <div className="w-full max-w-2xl mb-24">
           <h2 className="text-lg font-mono uppercase mb-4">#2 CCTP Message</h2>
           <CCTPMessage />
         </div>
 
         {/* Game */}
-        <div className="mb-16">
-          <h2 className="max-w-2xl mx-auto text-lg font-mono uppercase mb-4">#3 Play Game</h2>
+        <div className="mb-24 max-w-2xl w-full">
+          <h2 className="text-lg w-full font-mono uppercase mb-4">#3 Play Game</h2>
           <GameOfLife />
         </div>
       </main>

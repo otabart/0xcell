@@ -44,7 +44,7 @@ export class App extends React.Component<IAppProps, IAppState> {
     return (
       <div className="w-full">
         <div className="mb-8 flex justify-start gap-8 flex-wrap">
-          <div className="flex max-w-2xl mx-auto w-full items-center gap-4 justify-between">
+          <div className="flex w-full items-center gap-4 justify-between">
             <Button
               id="playButton"
               className="flex-1 text-left"
@@ -57,9 +57,7 @@ export class App extends React.Component<IAppProps, IAppState> {
             </div>
           </div>
         </div>
-        <div className="border border-gray-700/50 rounded-sm shadow-lg">
-          <Grid cells={this.state.cells} onMouseDown={this.flip} />
-        </div>
+        <Grid cells={this.state.cells} onMouseDown={this.flip} />
       </div>
     )
   }
