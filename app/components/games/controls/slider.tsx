@@ -35,8 +35,9 @@ export class Slider extends React.Component<ISliderProps, ISliderState> {
     )
   }
 
-  private handleChange = (event: any) => {
-    this.setState({ value: event.target.value })
-    this.props.onChange(event.target.value)
+  private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value, 10)
+    this.setState({ value })
+    this.props.onChange(value)
   }
 }

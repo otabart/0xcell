@@ -14,7 +14,6 @@ const eslintConfig = [
   {
     rules: {
       semi: ["error", "never"],
-      "@typescript-eslint/semi": ["error", "never"],
     },
   },
 ]

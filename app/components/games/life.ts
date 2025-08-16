@@ -29,7 +29,11 @@ export class Game {
    * @param seed    Must be able to contain values. Its size must not exceed
    *                the size of the grid.
    */
-  private static checkConstructorParameters(rows: number, columns: number, seed: Grid): void {
+  private static checkConstructorParameters(
+    rows: number,
+    columns: number,
+    seed: Grid | null
+  ): void {
     if (rows <= 0 || columns <= 0) {
       throw new Error("Row and column count must be positive integers")
     }
@@ -59,7 +63,7 @@ export class Game {
    *
    * The seed pattern is optional, so this attribute can also be null.
    */
-  private readonly seed: Grid
+  private readonly seed: Grid | null
 
   /**
    * The current representation of the grid.
@@ -86,7 +90,7 @@ export class Game {
    *                integer. Very large values may cause performance issues.
    * @param seed    Optional: the pattern used to initialise the grid.
    */
-  public constructor(rows: number, columns: number, seed: Grid = null) {
+  public constructor(rows: number, columns: number, seed: Grid | null = null) {
     Game.checkConstructorParameters(rows, columns, seed)
 
     this.blueGrid = this.initialise(rows, columns)

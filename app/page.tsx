@@ -27,7 +27,9 @@ export default function Home() {
         {/* Title */}
         <div className="text-center mb-12">
           <h2 className="text-6xl md:text-8xl font-bold tracking-tight mb-4">EMERGE</h2>
-          <p className="text-gray-500 text-sm tracking-widest uppercase">Conway's Game of Life</p>
+          <p className="text-gray-500 text-sm tracking-widest uppercase">
+            Conway&apos;s Game of Life
+          </p>
         </div>
 
         {/* Game */}
