@@ -13,8 +13,8 @@ export const Grid = (props: IGridProps) => {
    * @param grid The grid that should be rendered.
    */
   const renderGrid = (grid: Life.Grid): React.JSX.Element[] => {
-    return grid.map((row: boolean[], rowIndex: number) => {
-      const rowCells = row.map((cell: boolean, columnIndex: number) => {
+    return grid.map((row: number[], rowIndex: number) => {
+      const rowCells = row.map((cell: number, columnIndex: number) => {
         return renderCell(rowIndex, columnIndex, cell)
       })
       return <tr key={rowIndex}>{rowCells}</tr>
@@ -28,7 +28,7 @@ export const Grid = (props: IGridProps) => {
    * @param column Column of the grid.
    * @param value  Whether the cell is active or not.
    */
-  const renderCell = (row: number, column: number, value: boolean): React.JSX.Element => {
+  const renderCell = (row: number, column: number, value: number): React.JSX.Element => {
     const key = row + "_" + column
     return (
       <td

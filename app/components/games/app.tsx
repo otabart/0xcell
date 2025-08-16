@@ -1,7 +1,6 @@
 import * as React from "react"
 import * as Life from "./life"
 import { Button } from "./controls/button"
-import { Slider } from "./controls/slider"
 import { Grid } from "./grid"
 
 export interface IAppProps {
@@ -53,9 +52,6 @@ export class App extends React.Component<IAppProps, IAppState> {
               label={this.state.isPlaying ? "Pause" : "Play"}
               onClick={this.togglePlay}
             />
-          </div>
-          <div className="control-group">
-            <Slider id="slider" value={this.state.speed} onChange={this.adjustSpeed} />
           </div>
         </div>
         <Grid cells={this.state.cells} onMouseDown={this.flip} />
@@ -120,18 +116,5 @@ export class App extends React.Component<IAppProps, IAppState> {
    */
   private flip = (row: number, column: number) => () => {
     this.setState({ cells: this.props.game.flip(row, column) })
-  }
-
-  /**
-   * Updates the animation speed.
-   *
-   * @param speed How fast the animation should be. Must be between 1 and 10.
-   */
-  private adjustSpeed = (speed: number): void => {
-    clearInterval(this.state.animation)
-    this.setState({
-      animation: setInterval(this.evolve, App.determineInterval(speed)),
-      isPlaying: true,
-    })
   }
 }

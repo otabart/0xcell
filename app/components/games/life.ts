@@ -117,7 +117,7 @@ export class Game {
    * @param column Column of the cell that should be flipped. Zero-indexed.
    */
   public flip = (row: number, column: number): Grid => {
-    this.currentGrid[row][column] = !this.currentGrid[row][column]
+    this.currentGrid[row][column] = this.currentGrid[row][column] === 0 ? 1 : 0
 
     return this.currentGrid
   }
@@ -128,7 +128,7 @@ export class Game {
   public evolve = (): Grid => {
     // There’s a “current” grid and a “next” grid. This updates the “next” grid
     // first, and leaves the “current” grid untouched
-    this.currentGrid.forEach((row: boolean[], rowIndex: number) => {
+    this.currentGrid.forEach((row: number[], rowIndex: number) => {
       row.forEach((_, columnIndex: number) => {
         const activeCells = this.countActiveCells(rowIndex, columnIndex)
         this.updateCell(rowIndex, columnIndex, activeCells)
@@ -148,7 +148,7 @@ export class Game {
    * Will apply the seed pattern if one was passed during instance construction.
    */
   public reset = (): Grid => {
-    this.currentGrid.map((row) => row.fill(false))
+    this.currentGrid.map((row) => row.fill(0))
 
     this.applySeedPattern()
 
@@ -163,8 +163,8 @@ export class Game {
    */
   private initialise = (rows: number, columns: number): Grid => {
     return Array(rows)
-      .fill(false)
-      .map(() => Array(columns).fill(false))
+      .fill(0)
+      .map(() => Array(columns).fill(0))
   }
 
   /**
@@ -174,8 +174,8 @@ export class Game {
    */
   private applySeedPattern = (): void => {
     if (this.seed !== null) {
-      this.seed.forEach((row: boolean[], rowIndex: number) => {
-        row.forEach((cell: boolean, colIndex: number) => {
+      this.seed.forEach((row: number[], rowIndex: number) => {
+        row.forEach((cell: number, colIndex: number) => {
           this.currentGrid[rowIndex][colIndex] = cell
         })
       })
@@ -238,13 +238,13 @@ export class Game {
   private updateCell = (row: number, column: number, activeCells: number): void => {
     // Conditions are very good, so the cell becomes alive (if it isn’t already)
     if (activeCells === 3) {
-      this.nextGrid[row][column] = true
+      this.nextGrid[row][column] = 1
       // Everything’s stable, nothing changes
     } else if (activeCells === 4) {
       this.nextGrid[row][column] = this.currentGrid[row][column]
       // Under- or overpopulation kills the cell
     } else {
-      this.nextGrid[row][column] = false
+      this.nextGrid[row][column] = 0
     }
   }
 
