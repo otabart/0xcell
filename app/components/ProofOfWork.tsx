@@ -10,17 +10,47 @@ interface PoWState {
   difficulty: number
   generatedPattern: number[][] | null
   matchedPattern: Pattern | null
+  startTime?: number
+  miningTime?: number
 }
 
-// Generate a simple hash-like string
+// Generate a longer hash-like string for better visual effect
 function generateHash(input: string): string {
-  let hash = 0
+  let hash1 = 0
+  let hash2 = 0
+  let hash3 = 0
+
   for (let i = 0; i < input.length; i++) {
     const char = input.charCodeAt(i)
-    hash = (hash << 5) - hash + char
-    hash = hash & hash // Convert to 32-bit integer
+    hash1 = (hash1 << 5) - hash1 + char
+    hash2 = (hash2 << 3) + hash2 + char * 31
+    hash3 = (hash3 << 7) - hash3 + char * 17
+    hash1 = hash1 & hash1
+    hash2 = hash2 & hash2
+    hash3 = hash3 & hash3
   }
-  return Math.abs(hash).toString(16).padStart(8, "0")
+
+  // Create a 64-character hash for visual impact
+  const part1 = Math.abs(hash1).toString(16).padStart(8, "0")
+  const part2 = Math.abs(hash2).toString(16).padStart(8, "0")
+  const part3 = Math.abs(hash3).toString(16).padStart(8, "0")
+  const part4 = Math.abs(hash1 ^ hash2)
+    .toString(16)
+    .padStart(8, "0")
+  const part5 = Math.abs(hash2 ^ hash3)
+    .toString(16)
+    .padStart(8, "0")
+  const part6 = Math.abs(hash1 ^ hash3)
+    .toString(16)
+    .padStart(8, "0")
+  const part7 = Math.abs(hash1 + hash2)
+    .toString(16)
+    .padStart(8, "0")
+  const part8 = Math.abs(hash2 + hash3)
+    .toString(16)
+    .padStart(8, "0")
+
+  return part1 + part2 + part3 + part4 + part5 + part6 + part7 + part8
 }
 
 // Convert hash to a cell pattern with more interesting rules
@@ -139,7 +169,7 @@ export default function ProofOfWork({
     isHashing: false,
     currentHash: "",
     nonce: 0,
-    difficulty: 1,
+    difficulty: 2, // Fixed difficulty - lowered for better success rate
     generatedPattern: null,
     matchedPattern: null,
   })
@@ -152,6 +182,8 @@ export default function ProofOfWork({
       currentHash: "",
       generatedPattern: null,
       matchedPattern: null,
+      startTime: Date.now(),
+      miningTime: undefined,
     }))
   }, [])
 
@@ -173,13 +205,22 @@ export default function ProofOfWork({
         const hash = generateHash(input)
         const pattern = hashToPattern(hash)
 
-        // Check if we found a "valid" hash (ends with required zeros based on difficulty)
-        const requiredZeros = "0".repeat(prev.difficulty)
-        const isValid = hash.endsWith(requiredZeros)
+        // Check if we found a "valid" hash
+        // More flexible validation: check for patterns of zeros
+        const hasDoubleZero = hash.includes("00")
+        const hasTripleZero = hash.includes("000")
+        const endsWithZero = hash.endsWith("0")
 
-        if (isValid || newNonce > 100) {
-          // Found valid hash or timeout
+        // Progressive difficulty: easier targets have higher chance
+        const isValid =
+          prev.difficulty === 2
+            ? hasTripleZero || (hasDoubleZero && endsWithZero)
+            : hash.endsWith("0".repeat(prev.difficulty))
+
+        if (isValid || newNonce > 120) {
+          // Found valid hash or timeout after 120 attempts
           const customPattern = createCustomPattern(pattern, hash, prev.difficulty)
+          const miningTime = prev.startTime ? (Date.now() - prev.startTime) / 1000 : 0
 
           if (customPattern && onPatternGenerated) {
             onPatternGenerated(customPattern)
@@ -192,6 +233,7 @@ export default function ProofOfWork({
             nonce: newNonce,
             generatedPattern: pattern,
             matchedPattern: customPattern,
+            miningTime: miningTime,
           }
         }
 
@@ -202,7 +244,7 @@ export default function ProofOfWork({
           generatedPattern: pattern,
         }
       })
-    }, 50) // Update every 50ms for smooth animation
+    }, 200) // Update every 200ms for more realistic mining speed
 
     return () => clearInterval(interval)
   }, [state.isHashing, onPatternGenerated])
@@ -214,11 +256,11 @@ export default function ProofOfWork({
       </h3>
 
       {/* Controls */}
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-center">
         <button
           onClick={state.isHashing ? stopHashing : startHashing}
           className={`
-            px-6 py-3 text-sm font-mono uppercase tracking-wider transition-all
+            px-8 py-3 text-sm font-mono uppercase tracking-wider transition-all
             ${
               state.isHashing
                 ? "bg-red-900 hover:bg-red-800 text-red-100"
@@ -228,49 +270,50 @@ export default function ProofOfWork({
         >
           {state.isHashing ? "Stop Mining" : "Start Mining"}
         </button>
-
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-gray-400">Difficulty:</label>
-          <select
-            value={state.difficulty}
-            onChange={(e) => setState((prev) => ({ ...prev, difficulty: Number(e.target.value) }))}
-            disabled={state.isHashing}
-            className="bg-gray-800 text-gray-100 text-xs px-2 py-1"
-          >
-            {[1, 2, 3, 4, 5].map((d) => (
-              <option key={d} value={d}>
-                Level {d}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
       {/* Hash Display */}
-      <div className="space-y-2 text-center">
-        <div className="text-xs text-gray-400">
-          Nonce: <span className="text-gray-100 font-mono">{state.nonce}</span>
+      <div className="space-y-3 text-center">
+        <div className="flex justify-center gap-6 text-xs">
+          <div className="text-gray-400">
+            Nonce:{" "}
+            <span className="text-gray-100 font-mono">
+              {state.nonce.toString().padStart(6, "0")}
+            </span>
+          </div>
+          {state.isHashing && (
+            <div className="text-gray-400">
+              Hashrate: <span className="text-gray-100 font-mono">100 H/s</span>
+            </div>
+          )}
         </div>
-        <div className="text-xs text-gray-400 break-all">
-          Hash:{" "}
-          <span className="text-gray-100 font-mono">
+
+        {/* Long hash display with better visual formatting */}
+        <div className="bg-gray-900 p-4 rounded border border-gray-700 overflow-hidden">
+          <div className="text-[11px] text-gray-500 mb-2">Current Hash:</div>
+          <div className="font-mono text-xs break-all leading-relaxed">
             {state.currentHash ? (
               <>
-                {state.currentHash.slice(0, -state.difficulty)}
+                <span className="text-gray-400">{state.currentHash.slice(0, 16)}</span>
+                <span className="text-gray-500">{state.currentHash.slice(16, 32)}</span>
+                <span className="text-gray-400">{state.currentHash.slice(32, 48)}</span>
+                <span className="text-gray-500">
+                  {state.currentHash.slice(48, -state.difficulty)}
+                </span>
                 <span className="text-yellow-400 font-bold">
                   {state.currentHash.slice(-state.difficulty)}
                 </span>
               </>
             ) : (
-              "--------"
+              <span className="text-gray-600">{"0".repeat(64)}</span>
             )}
-          </span>
-        </div>
-        {state.isHashing && (
-          <div className="text-[10px] text-gray-500">
-            Looking for {state.difficulty} trailing zeros...
           </div>
-        )}
+          {state.isHashing && (
+            <div className="text-[10px] text-blue-400 mt-2 animate-pulse">
+              Mining... Looking for: "000" or "00" + ending "0"
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Fixed Size Pattern Display Area */}
@@ -326,7 +369,7 @@ export default function ProofOfWork({
 
           <div className="relative z-10">
             <div className="text-sm text-green-400 font-bold animate-bounce">
-              ✨ Mining Success! ✨
+              ✨ Block Found! ✨
             </div>
             <div className="text-xs text-gray-300 mt-2">
               Pattern: <span className="text-white font-semibold">{state.matchedPattern.name}</span>
@@ -334,6 +377,15 @@ export default function ProofOfWork({
             <div className="text-xs text-gray-400">
               Rarity: {"⭐".repeat(state.matchedPattern.rarity)} • Type:{" "}
               {state.matchedPattern.category}
+            </div>
+            {state.miningTime && (
+              <div className="text-xs text-gray-500 mt-1">
+                Mined in {state.miningTime.toFixed(1)}s • {state.nonce} hashes
+              </div>
+            )}
+            <div className="text-[10px] text-gray-600 mt-1">
+              Valid hash found:{" "}
+              {state.currentHash.includes("000") ? "Triple zeros! 🎯" : "Double zeros + ending 0"}
             </div>
 
             {state.matchedPattern.rarity >= 4 && (
