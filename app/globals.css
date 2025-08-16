@@ -14,8 +14,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #111827;
+    --foreground: #f3f4f6;
   }
 }
 
@@ -28,9 +28,8 @@ body {
 /* Game of Life Styles - Minimalist */
 .game-app {
   padding: 1.5rem;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0;
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  border-radius: 0.5rem;
 }
 
 .game-controls {
@@ -115,26 +114,26 @@ body {
 .game-grid {
   border-collapse: collapse;
   margin: 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(75, 85, 99, 0.5);
 
   .cell {
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(55, 65, 81, 0.3);
     height: 10px;
     width: 10px;
     font-size: 0;
     text-indent: -10000rem;
-    background: transparent;
+    background: rgba(31, 41, 55, 0.3);
     transition: background-color 0.15s ease;
     cursor: pointer;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(55, 65, 81, 0.5);
+      border-color: rgba(75, 85, 99, 0.5);
     }
 
     &.-is-active {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(249, 250, 251, 0.9);
+      border-color: rgba(156, 163, 175, 0.5);
     }
   }
 }
