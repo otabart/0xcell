@@ -19,7 +19,7 @@ export default function Home() {
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen text-gray-100" style={{ backgroundColor: "lch(2.467 0 272)" }}>
+    <div className="min-h-screen text-gray-100">
       {/* Main Content */}
       <main className="min-h-screen flex flex-col items-center px-6 py-12 pb-24">
         {/* Introduction */}
@@ -66,11 +66,8 @@ export default function Home() {
       </main>
 
       {/* Fixed Bottom Bar */}
-      <div
-        className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-sm border-t border-gray-700"
-        style={{ backgroundColor: "lch(2.467 0 272 / 0.9)" }}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-700/50 bg-black/80">
+        <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
           {/* Left Side - Selected Cell Display */}
           <div className="flex-1">
             <SelectedCellDisplay selectedPattern={selectedPattern} />
@@ -81,11 +78,6 @@ export default function Home() {
             <ConnectKitButton showBalance={true} />
           </div>
         </div>
-      </div>
-
-      {/* Subtle Background Gradient */}
-      <div className="fixed inset-0 -z-10 opacity-30">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-blue-900/20"></div>
       </div>
     </div>
   )

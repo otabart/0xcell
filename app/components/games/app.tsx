@@ -42,19 +42,19 @@ export class App extends React.Component<IAppProps, IAppState> {
 
   public render() {
     return (
-      <div
-        className="p-6 border border-gray-700/50 rounded-sm"
-        style={{ backgroundColor: "lch(2.467 0 272)" }}
-      >
-        <div className="mb-8 flex justify-center gap-8 flex-wrap">
-          <div className="flex items-center gap-4">
-            <Button id="resetButton" label="Reset" onClick={this.reset} />
-            <Button id="nextButton" label="Next" onClick={this.next} />
+      <div className="max-w-2xl">
+        <div className="mb-8 flex justify-start gap-8 flex-wrap">
+          <div className="flex w-full items-center gap-4 justify-between">
             <Button
               id="playButton"
+              className="flex-1 text-left"
               label={this.state.isPlaying ? "Pause" : "Play"}
               onClick={this.togglePlay}
             />
+            <div className="flex gap-4">
+              <Button id="resetButton" label="Reset" onClick={this.reset} />
+              <Button id="nextButton" label="Next" onClick={this.next} />
+            </div>
           </div>
         </div>
         <Grid cells={this.state.cells} onMouseDown={this.flip} />

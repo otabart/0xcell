@@ -141,13 +141,11 @@ export default function CCTPMessage() {
       <button
         onClick={sendCCTPMessage}
         disabled={!address || isProcessing}
-        className={`w-full p-3 rounded cursor-pointer font-medium text-sm text-left transition-all ${
-          !address
-            ? "bg-gray-800 text-gray-500 cursor-not-allowed"
-            : "bg-gradient-to-r from-yellow-500 to-blue-500 text-white hover:opacity-90"
+        className={`w-full p-3 uppercase cursor-pointer font-medium hover:bg-white/10 text-sm border text-left transition-all ${
+          !address ? "bg-gray-800 text-gray-500 cursor-not-allowed" : "text-white"
         }`}
       >
-        {!address ? "🔗 Connect Wallet to Play" : isProcessing ? txStatus : "🎮 Send CCTP Message"}
+        {!address ? "🔗 Connect Wallet to Play" : isProcessing ? txStatus : "Send CCTP Message"}
       </button>
     </div>
   )

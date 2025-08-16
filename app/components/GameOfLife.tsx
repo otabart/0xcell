@@ -8,8 +8,8 @@ export default function GameOfLife() {
   const [game, setGame] = useState<Game | null>(null)
 
   useEffect(() => {
-    const rows: number = 60
-    const cols: number = 60
+    const rows: number = 50
+    const cols: number = 50
 
     const seed: Grid = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

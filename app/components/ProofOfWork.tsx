@@ -259,12 +259,8 @@ export default function ProofOfWork({
         <button
           onClick={state.isHashing ? stopHashing : startHashing}
           className={`
-            px-8 py-3 text-sm font-mono uppercase tracking-wider transition-all
-            ${
-              state.isHashing
-                ? "bg-red-900 hover:bg-red-800 text-red-100"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
-            }
+            px-8 py-3 w-full text-sm border font-mono cursor-pointer hover:bg-white/10 uppercase tracking-wider transition-all
+            ${state.isHashing ? "text-red-400" : "text-white"}
           `}
         >
           {state.isHashing ? "Stop Mining" : "Start Mining"}
