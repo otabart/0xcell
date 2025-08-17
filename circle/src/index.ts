@@ -4,8 +4,8 @@ import { TransferParams, GameCoordinates } from "./types"
 
 // Default transfer parameters
 const DEFAULT_PARAMS: TransferParams = {
-  amount: 10_000n, // 0.01 USDC (6 decimals)
-  maxFee: 500n, // 0.0005 USDC max fee for fast transfer
+  amount: BigInt(10_000), // 0.01 USDC (6 decimals)
+  maxFee: BigInt(500), // 0.0005 USDC max fee for fast transfer
   minFinalityThreshold: 1000, // For fast transfer
 }
 

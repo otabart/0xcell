@@ -202,7 +202,7 @@ async function runDemo() {
       const service = new CCTPService(CCTP_CONFIG)
       const result = await service.executeTransfer(
         process.env.GAME_CONTRACT!,
-        { amount: BigInt(amount * 1e6), maxFee: 500n, minFinalityThreshold: 1000 },
+        { amount: BigInt(amount * 1e6), maxFee: BigInt(500), minFinalityThreshold: 1000 },
         coordinates
       )
       

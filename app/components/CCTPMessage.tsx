@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAccount, useChainId, useChains } from "wagmi"
+import { useAccount } from "wagmi"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism"
 import Image from "next/image"
@@ -49,7 +49,7 @@ const DEFAULT_AMOUNT = 0.1 // 0.1 USDC
 
 interface CCTPMessageProps {
   minedHashValue?: string
-  onStatusChange?: (status: string, selectedTab: string) => void
+  onStatusChange?: (status: string) => void
 }
 
 export default function CCTPMessage({ minedHashValue, onStatusChange }: CCTPMessageProps) {
@@ -63,9 +63,9 @@ export default function CCTPMessage({ minedHashValue, onStatusChange }: CCTPMess
   // Notify parent component of status changes
   useEffect(() => {
     if (onStatusChange) {
-      onStatusChange(status, selectedTab)
+      onStatusChange(status)
     }
-  }, [status, selectedTab, onStatusChange])
+  }, [status, onStatusChange])
 
   // Status messages
   const statusMessages = {

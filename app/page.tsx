@@ -4,7 +4,6 @@ import { ConnectKitButton } from "connectkit"
 import { useState, useEffect } from "react"
 import GameOfLife from "./components/GameOfLife"
 import { type Pattern } from "./components/CellSelector"
-import SelectedCellDisplay from "./components/SelectedCellDisplay"
 import ProofOfWork from "./components/ProofOfWork"
 import CCTPMessage from "./components/CCTPMessage"
 import StepStatus from "./components/StepStatus"
@@ -12,11 +11,10 @@ import Image from "next/image"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
-  const [selectedPattern, setSelectedPattern] = useState<Pattern | undefined>()
+  // const [selectedPattern, setSelectedPattern] = useState<Pattern | undefined>()
   const [minedHashValue, setMinedHashValue] = useState<string | undefined>()
   const [miningStatus, setMiningStatus] = useState<"idle" | "mining" | "complete">("idle")
   const [cctpStatus, setCctpStatus] = useState("idle")
-  const [cctpSelectedTab, setCctpSelectedTab] = useState("encode")
   const [gameStatus, setGameStatus] = useState<"idle" | "playing" | "complete">("idle")
   const [gameGeneration, setGameGeneration] = useState<number>(0)
 
@@ -63,7 +61,7 @@ export default function Home() {
         <div className="w-full max-w-2xl mb-24">
           <h2 className="text-lg font-mono uppercase">#1 Mining</h2>
           <ProofOfWork
-            onPatternGenerated={setSelectedPattern}
+            onPatternGenerated={() => {}}
             onHashMined={(hash) => {
               setMinedHashValue(hash)
               setMiningStatus("complete")
@@ -77,9 +75,8 @@ export default function Home() {
           <h2 className="text-lg font-mono uppercase mb-4">#2 CCTP Message</h2>
           <CCTPMessage
             minedHashValue={minedHashValue}
-            onStatusChange={(status, selectedTab) => {
+            onStatusChange={(status) => {
               setCctpStatus(status)
-              setCctpSelectedTab(selectedTab)
             }}
           />
         </div>

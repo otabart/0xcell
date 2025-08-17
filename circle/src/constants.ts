@@ -20,7 +20,7 @@ export const CCTP_CONFIG: CCTPConfig = {
 export const GAME_CONFIG = {
   minCoordinate: 1,
   maxCoordinate: 256,
-  coordinateBitShift: 128n,
+  coordinateBitShift: BigInt(128),
 }
 
 // ABI definitions

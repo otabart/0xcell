@@ -189,7 +189,7 @@ export class CCTPService {
     console.log(`💵 Amount: ${Number(params.amount) / 1e6} USDC`)
 
     // Step 1: Approve USDC
-    await this.approveUSDC(params.amount * 10n) // Approve 10x for convenience
+    await this.approveUSDC(params.amount * BigInt(10)) // Approve 10x for convenience
 
     // Step 2: Burn USDC with hook data
     const burnTxHash = await this.burnUSDCWithGameData(gameCoreRecordAddress, params, coordinates)

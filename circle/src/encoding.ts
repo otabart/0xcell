@@ -27,7 +27,7 @@ export function packCoordinates(coordinates: GameCoordinates): bigint {
  * Unpacks coordinates from a uint256
  */
 export function unpackCoordinates(packed: bigint): GameCoordinates {
-  const mask = (1n << GAME_CONFIG.coordinateBitShift) - 1n
+  const mask = (BigInt(1) << GAME_CONFIG.coordinateBitShift) - BigInt(1)
   return {
     x: Number(packed >> GAME_CONFIG.coordinateBitShift),
     y: Number(packed & mask),
