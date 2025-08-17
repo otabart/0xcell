@@ -13,31 +13,93 @@ const getContractSnippets = (hashValue?: string) => ({
   encode: `// Ethereum: Burn USDC and attach game data
 const amount = 0.1 * 10**6; // 0.1 USDC (100,000 in 6 decimals)
 ${hashValue ? `const minedHash = "${hashValue}"; // From Step 1 Mining` : "// Complete Step 1 to get your mined hash"}
+
+// Encode game initialization data
 const hookData = encodeGameData(amount, userAddress, x, y, minedHash);
+
+// Burn USDC with hook for cross-chain game initialization
 const tx = await cctpContract.depositForBurnWithHook(
-  amount, BASE_DOMAIN, hookRecipient, usdc.address, hookData
+  amount,                    // USDC amount to burn
+  BASE_DOMAIN,              // Destination: Base Sepolia
+  hookRecipient,            // CCTP Hook Wrapper contract
+  usdc.address,             // USDC token address
+  hookData                  // Encoded game data
 );`,
+
   decode: `// CCTP Hook: Auto-execute when USDC arrives on Base
-function handleReceiveMessage(uint32 sourceDomain, bytes32 sender, bytes calldata messageBody) external {
-  (address token, uint256 amount, bytes memory hookData) = abi.decode(messageBody, (address, uint256, bytes));
+function handleReceiveMessage(
+  uint32 sourceDomain,
+  bytes32 sender,
+  bytes calldata messageBody
+) external {
+  // Decode the CCTP message
+  (address token, uint256 amount, bytes memory hookData) = 
+    abi.decode(messageBody, (address, uint256, bytes));
   
-  // 0.1 USDC received, forward to game contract
+  // Forward USDC and game data to initialize player
   IGameCoreRecord(gameContract).initGame(hookData);
+  
+  // Transfer USDC to treasury
   IERC20(token).transfer(treasury, amount);
 }`,
-  process: `// Game Contract: Initialize player on-chain
+
+  process: `// Game Contract: Initialize player with Chainlink VRF
 function initGame(bytes calldata data) external returns (bool) {
   require(msg.sender == cctpHookWrapper, "Unauthorized");
   
-  (uint256 usdcAmount, address user, uint256 coords, bytes32 minedHash) = _decodeData(data);
+  // Decode cross-chain message data
+  (uint256 usdcAmount, address user, uint256 coords, bytes32 minedHash) = 
+    _decodeData(data);
   (uint256 x, uint256 y) = _extractCoordinates(coords);
+  
+  // Calculate base attributes from USDC amount
   uint256 level = _calculateBaseLevel(usdcAmount);
   
-  // Use mined hash for additional randomness
-  uint256 seed = uint256(minedHash);
-  _initGame(user, level, x, y, seed);
+  // Request randomness from Chainlink VRF
+  uint256 requestId = requestRandomness(
+    keyHash,
+    subscriptionId,
+    requestConfirmations,
+    callbackGasLimit,
+    1 // numWords: request 1 random value
+  );
   
-  emit GameInitialized(user, block.timestamp);
+  // Store player data pending VRF callback
+  pendingPlayers[requestId] = PlayerInit({
+    user: user,
+    level: level,
+    x: x,
+    y: y,
+    minedHash: minedHash
+  });
+  
+  emit RandomnessRequested(requestId, user);
+}
+
+// Chainlink VRF Callback
+function fulfillRandomWords(
+  uint256 requestId,
+  uint256[] memory randomWords
+) internal override {
+  PlayerInit memory player = pendingPlayers[requestId];
+  
+  // Combine VRF randomness with mined hash for unique seed
+  uint256 finalSeed = uint256(keccak256(abi.encodePacked(
+    randomWords[0],
+    player.minedHash,
+    block.timestamp
+  )));
+  
+  // Initialize player with verifiable randomness
+  _initGame(
+    player.user,
+    player.level,
+    player.x,
+    player.y,
+    finalSeed
+  );
+  
+  emit GameInitialized(player.user, block.timestamp, finalSeed);
 }`,
 })
 
@@ -120,7 +182,7 @@ export default function CCTPMessage({ minedHashValue, onStatusChange }: CCTPMess
         </div>
 
         {/* Code Display */}
-        <div className="overflow-hidden">
+        <div className="overflow-hidden overflow-x-auto">
           <SyntaxHighlighter
             language={selectedTab === "encode" ? "typescript" : "solidity"}
             style={tomorrow}

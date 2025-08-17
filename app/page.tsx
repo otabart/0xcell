@@ -129,8 +129,9 @@ export default function Home() {
 
         {/* Game */}
         <div className="mb-24 max-w-2xl w-full">
-          <h2 className="text-lg w-full font-mono uppercase mb-4">#3 Play Game</h2>
+          <h2 className="text-lg font-mono uppercase mb-4">#3 Play Game vs Bot</h2>
           <GameOfLife
+            minedHash={minedHashValue}
             onGameStatusChange={(status, generation) => {
               setGameStatus(status)
               if (generation !== undefined) {
