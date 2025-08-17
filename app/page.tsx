@@ -7,11 +7,18 @@ import { type Pattern } from "./components/CellSelector"
 import SelectedCellDisplay from "./components/SelectedCellDisplay"
 import ProofOfWork from "./components/ProofOfWork"
 import CCTPMessage from "./components/CCTPMessage"
+import StepStatus from "./components/StepStatus"
 import Image from "next/image"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
   const [selectedPattern, setSelectedPattern] = useState<Pattern | undefined>()
+  const [minedHashValue, setMinedHashValue] = useState<string | undefined>()
+  const [miningStatus, setMiningStatus] = useState<"idle" | "mining" | "complete">("idle")
+  const [cctpStatus, setCctpStatus] = useState("idle")
+  const [cctpSelectedTab, setCctpSelectedTab] = useState("encode")
+  const [gameStatus, setGameStatus] = useState<"idle" | "playing" | "complete">("idle")
+  const [gameGeneration, setGameGeneration] = useState<number>(0)
 
   useEffect(() => {
     setMounted(true)
@@ -55,33 +62,61 @@ export default function Home() {
         {/* Proof of Work */}
         <div className="w-full max-w-2xl mb-24">
           <h2 className="text-lg font-mono uppercase">#1 Mining</h2>
-          <ProofOfWork onPatternGenerated={setSelectedPattern} />
+          <ProofOfWork
+            onPatternGenerated={setSelectedPattern}
+            onHashMined={(hash) => {
+              setMinedHashValue(hash)
+              setMiningStatus("complete")
+            }}
+            onMiningStatusChange={setMiningStatus}
+          />
         </div>
 
         {/* CCTP Message Section */}
         <div className="w-full max-w-2xl mb-24">
           <h2 className="text-lg font-mono uppercase mb-4">#2 CCTP Message</h2>
-          <CCTPMessage />
+          <CCTPMessage
+            minedHashValue={minedHashValue}
+            onStatusChange={(status, selectedTab) => {
+              setCctpStatus(status)
+              setCctpSelectedTab(selectedTab)
+            }}
+          />
         </div>
 
         {/* Game */}
         <div className="mb-24 max-w-2xl w-full">
           <h2 className="text-lg w-full font-mono uppercase mb-4">#3 Play Game</h2>
-          <GameOfLife />
+          <GameOfLife
+            onGameStatusChange={(status, generation) => {
+              setGameStatus(status)
+              if (generation !== undefined) {
+                setGameGeneration(generation)
+              }
+            }}
+          />
         </div>
       </main>
 
       {/* Fixed Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-700/50 bg-black/80">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
-          {/* Left Side - Selected Cell Display */}
-          <div className="flex-1">
-            <SelectedCellDisplay selectedPattern={selectedPattern} />
-          </div>
+      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-700/50 bg-black/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 py-3">
+          <div className="flex justify-between items-center">
+            {/* Left Side - Step Status */}
+            <div className="flex-1">
+              <StepStatus
+                miningStatus={miningStatus}
+                minedHashValue={minedHashValue}
+                cctpStatus={cctpStatus}
+                gameStatus={gameStatus}
+                gameGeneration={gameGeneration}
+              />
+            </div>
 
-          {/* Right Side - Wallet */}
-          <div className="flex-1 flex justify-end">
-            <ConnectKitButton showBalance={true} />
+            {/* Right Side - Wallet */}
+            <div className="flex-shrink-0 ml-6">
+              <ConnectKitButton showBalance={true} />
+            </div>
           </div>
         </div>
       </div>

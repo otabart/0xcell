@@ -163,8 +163,12 @@ function createCustomPattern(
 
 export default function ProofOfWork({
   onPatternGenerated,
+  onHashMined,
+  onMiningStatusChange,
 }: {
   onPatternGenerated?: (pattern: Pattern) => void
+  onHashMined?: (hash: string) => void
+  onMiningStatusChange?: (status: "idle" | "mining" | "complete") => void
 }) {
   const [state, setState] = useState<PoWState>({
     isHashing: false,
@@ -186,7 +190,8 @@ export default function ProofOfWork({
       startTime: Date.now(),
       miningTime: undefined,
     }))
-  }, [])
+    onMiningStatusChange?.("mining")
+  }, [onMiningStatusChange])
 
   const stopHashing = useCallback(() => {
     setState((prev) => ({
@@ -248,10 +253,23 @@ export default function ProofOfWork({
 
   // Notify parent component when a pattern is successfully mined
   useEffect(() => {
-    if (state.matchedPattern && !state.isHashing && onPatternGenerated) {
-      onPatternGenerated(state.matchedPattern)
+    if (state.matchedPattern && !state.isHashing) {
+      if (onPatternGenerated) {
+        onPatternGenerated(state.matchedPattern)
+      }
+      if (onHashMined && state.currentHash) {
+        onHashMined(state.currentHash)
+      }
+      onMiningStatusChange?.("complete")
     }
-  }, [state.matchedPattern, state.isHashing, onPatternGenerated])
+  }, [
+    state.matchedPattern,
+    state.isHashing,
+    state.currentHash,
+    onPatternGenerated,
+    onHashMined,
+    onMiningStatusChange,
+  ])
 
   return (
     <div className="space-y-2">

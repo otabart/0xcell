@@ -3,63 +3,16 @@ import { useAccount, useWalletClient, usePublicClient, useChainId, useSwitchChai
 import { encodeFunctionData } from "viem"
 import { sepolia, baseSepolia } from "viem/chains"
 import axios from "axios"
-import type { GameCoordinates } from "../../circle/src"
 
-// Contract addresses
-const ETHEREUM_SEPOLIA_USDC = "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"
-const ETHEREUM_SEPOLIA_TOKEN_MESSENGER = "0x8fe6b999dc680ccfdd5bf7eb0974218be2542daa"
-const BASE_SEPOLIA_CCTP_HOOK_WRAPPER = "0x3e6d114f58980c7ff9D163F4757D4289cFbFd563"
-const BASE_SEPOLIA_DOMAIN = 6
-
-// ABI fragments
-const APPROVE_ABI = [
-  {
-    name: "approve",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "spender", type: "address" },
-      { name: "amount", type: "uint256" },
-    ],
-    outputs: [{ type: "bool" }],
-  },
-] as const
-
-const DEPOSIT_FOR_BURN_WITH_HOOK_ABI = [
-  {
-    name: "depositForBurnWithHook",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "amount", type: "uint256" },
-      { name: "destinationDomain", type: "uint32" },
-      { name: "mintRecipient", type: "bytes32" },
-      { name: "burnToken", type: "address" },
-      { name: "destinationCaller", type: "bytes32" },
-      { name: "maxFee", type: "uint256" },
-      { name: "minFinalityThreshold", type: "uint32" },
-      { name: "hookData", type: "bytes" },
-    ],
-    outputs: [],
-  },
-] as const
-
-const RELAY_ABI = [
-  {
-    name: "relay",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "message", type: "bytes" },
-      { name: "attestation", type: "bytes" },
-    ],
-    outputs: [
-      { name: "relaySuccess", type: "bool" },
-      { name: "hookSuccess", type: "bool" },
-      { name: "hookReturnData", type: "bytes" },
-    ],
-  },
-] as const
+// Import from Circle SDK
+import {
+  CCTP_CONFIG,
+  ABIS,
+  type GameCoordinates,
+  type Attestation,
+  encodeGameData,
+  addressToBytes32,
+} from "../../circle/src"
 
 export interface CCTPTransferParams {
   gameCoreRecordAddress: string
@@ -73,60 +26,98 @@ export function useCCTPTransfer() {
   const publicClient = usePublicClient()
   const chainId = useChainId()
   const { switchChain } = useSwitchChain()
+
   const [status, setStatus] = useState<
     "idle" | "approving" | "burning" | "attesting" | "minting" | "complete"
   >("idle")
   const [error, setError] = useState<string | null>(null)
   const [txHashes, setTxHashes] = useState<{ burn?: string; mint?: string }>({})
 
-  const encodeGameData = useCallback(
-    (amount: bigint, userAddress: string, coordinates: GameCoordinates): string => {
-      const packedCoordinates = (BigInt(coordinates.x) << 128n) | BigInt(coordinates.y)
-      return (
-        "0x" +
-        amount.toString(16).padStart(64, "0") +
-        userAddress.slice(2).toLowerCase().padStart(64, "0") +
-        packedCoordinates.toString(16).padStart(64, "0")
-      )
+  // Helper function to handle chain switching with user rejection
+  const ensureChain = useCallback(
+    async (targetChainId: number, chainName: string) => {
+      if (chainId === targetChainId || !walletClient) return true
+
+      try {
+        await switchChain({ chainId: targetChainId })
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        return true
+      } catch (error) {
+        const errorWithCode = error as { code?: number; message?: string }
+
+        // User rejected - silent fail
+        if (errorWithCode.code === 4001) {
+          setStatus("idle")
+          return false
+        }
+
+        // Chain not in wallet - try to add it
+        if (errorWithCode.code === 4902 || errorWithCode.message?.includes("Unrecognized chain")) {
+          try {
+            const chain = targetChainId === sepolia.id ? sepolia : baseSepolia
+            await walletClient.addChain({ chain })
+            await switchChain({ chainId: targetChainId })
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            return true
+          } catch (addError) {
+            const addErrorMessage = addError instanceof Error ? addError.message : String(addError)
+            if (!addErrorMessage.toLowerCase().includes("reject")) {
+              setError(`Failed to add ${chainName} network. Please add it manually in your wallet.`)
+            }
+            return false
+          }
+        }
+
+        // Other errors
+        setError(`Failed to switch to ${chainName}. Please switch manually.`)
+        return false
+      }
     },
-    []
+    [chainId, walletClient, switchChain]
   )
 
+  // Helper function to wait for Circle attestation
+  const waitForAttestation = useCallback(async (txHash: string): Promise<Attestation> => {
+    const url = `https://iris-api-sandbox.circle.com/v2/messages/${CCTP_CONFIG.ethereumSepoliaDomain}?transactionHash=${txHash}`
+
+    while (true) {
+      try {
+        const response = await axios.get(url)
+        if (response.data?.messages?.[0]?.status === "complete") {
+          return response.data.messages[0]
+        }
+      } catch {
+        // 404 is expected while waiting
+      }
+      await new Promise((resolve) => setTimeout(resolve, 5000))
+    }
+  }, [])
+
   const transfer = useCallback(
-    async ({ gameCoreRecordAddress, coordinates, amount }: CCTPTransferParams) => {
+    async ({ coordinates, amount }: CCTPTransferParams) => {
       if (!address || !walletClient || !publicClient) {
         throw new Error("Wallet not connected")
       }
 
-      setStatus("approving")
       setError(null)
       setTxHashes({})
 
       try {
         // Ensure we're on Ethereum Sepolia
-        if (chainId !== sepolia.id) {
-          try {
-            await switchChain({ chainId: sepolia.id })
-          } catch (error: any) {
-            // Chain not added to wallet, add it first
-            if (error.code === 4902 || error.message?.includes("Unrecognized chain")) {
-              await walletClient.addChain({ chain: sepolia })
-              await switchChain({ chainId: sepolia.id })
-            } else {
-              throw error
-            }
-          }
-        }
+        const onCorrectChain = await ensureChain(sepolia.id, "Ethereum Sepolia")
+        if (!onCorrectChain) return
 
-        // Step 1: Approve USDC
+        setStatus("approving")
+
+        // Step 1: Approve USDC using SDK constants
         const approveTx = await walletClient.sendTransaction({
           account: address,
           chain: sepolia,
-          to: ETHEREUM_SEPOLIA_USDC,
+          to: CCTP_CONFIG.ethereumSepoliaUSDC as `0x${string}`,
           data: encodeFunctionData({
-            abi: APPROVE_ABI,
+            abi: ABIS.approve,
             functionName: "approve",
-            args: [ETHEREUM_SEPOLIA_TOKEN_MESSENGER, amount * 10n], // Approve 10x for convenience
+            args: [CCTP_CONFIG.ethereumSepoliaTokenMessenger as `0x${string}`, amount * BigInt(10)],
           }),
         })
 
@@ -135,24 +126,26 @@ export function useCCTPTransfer() {
           confirmations: 1,
         })
 
-        // Step 2: Burn USDC with hook data
+        // Step 2: Burn USDC with hook data using SDK encoding
         setStatus("burning")
+
+        // Use SDK's encoding function
         const hookData = encodeGameData(amount, address, coordinates)
-        const destinationAddress = `0x000000000000000000000000${address.slice(2).toLowerCase()}`
+        const destinationAddress = addressToBytes32(address)
         const destinationCaller = "0x" + "0".repeat(64)
 
         const burnTx = await walletClient.sendTransaction({
           account: address,
           chain: sepolia,
-          to: ETHEREUM_SEPOLIA_TOKEN_MESSENGER,
+          to: CCTP_CONFIG.ethereumSepoliaTokenMessenger as `0x${string}`,
           data: encodeFunctionData({
-            abi: DEPOSIT_FOR_BURN_WITH_HOOK_ABI,
+            abi: ABIS.depositForBurnWithHook,
             functionName: "depositForBurnWithHook",
             args: [
               amount,
-              BASE_SEPOLIA_DOMAIN,
+              CCTP_CONFIG.baseSepoliaDomain,
               destinationAddress as `0x${string}`,
-              ETHEREUM_SEPOLIA_USDC,
+              CCTP_CONFIG.ethereumSepoliaUSDC as `0x${string}`,
               destinationCaller as `0x${string}`,
               BigInt(500), // maxFee
               1000, // minFinalityThreshold
@@ -172,27 +165,17 @@ export function useCCTPTransfer() {
         const attestation = await waitForAttestation(burnTx)
 
         // Step 4: Switch to Base Sepolia and mint
-        setStatus("minting")
+        const onBaseSepolia = await ensureChain(baseSepolia.id, "Base Sepolia")
+        if (!onBaseSepolia) return
 
-        // Try to switch chain, if it fails, add the chain first
-        try {
-          await walletClient.switchChain({ id: baseSepolia.id })
-        } catch (error: any) {
-          // Chain not added to wallet, add it first
-          if (error.code === 4902 || error.message?.includes("Unrecognized chain")) {
-            await walletClient.addChain({ chain: baseSepolia })
-            await walletClient.switchChain({ id: baseSepolia.id })
-          } else {
-            throw error
-          }
-        }
+        setStatus("minting")
 
         const mintTx = await walletClient.sendTransaction({
           account: address,
           chain: baseSepolia,
-          to: BASE_SEPOLIA_CCTP_HOOK_WRAPPER,
+          to: CCTP_CONFIG.baseSepoliaCCTPHookWrapper as `0x${string}`,
           data: encodeFunctionData({
-            abi: RELAY_ABI,
+            abi: ABIS.relay,
             functionName: "relay",
             args: [attestation.message as `0x${string}`, attestation.attestation as `0x${string}`],
           }),
@@ -207,32 +190,17 @@ export function useCCTPTransfer() {
         setStatus("complete")
         return { burnTx, mintTx }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Transfer failed")
+        const errorMessage = err instanceof Error ? err.message : "Transfer failed"
+        // Don't show error if user rejected the transaction
+        if (!errorMessage.toLowerCase().includes("reject")) {
+          setError(errorMessage)
+        }
         setStatus("idle")
         throw err
       }
     },
-    [address, walletClient, publicClient, encodeGameData, chainId, switchChain]
+    [address, walletClient, publicClient, ensureChain, waitForAttestation]
   )
 
   return { transfer, status, error, txHashes }
-}
-
-// Helper function to wait for Circle attestation
-async function waitForAttestation(
-  txHash: string
-): Promise<{ message: string; attestation: string }> {
-  const url = `https://iris-api-sandbox.circle.com/v2/messages/0?transactionHash=${txHash}`
-
-  while (true) {
-    try {
-      const response = await axios.get(url)
-      if (response.data?.messages?.[0]?.status === "complete") {
-        return response.data.messages[0]
-      }
-    } catch (error) {
-      // 404 is expected while waiting
-    }
-    await new Promise((resolve) => setTimeout(resolve, 5000))
-  }
 }

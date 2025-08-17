@@ -116,6 +116,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 // Export for use as a library
-export { CCTPService, CCTP_CONFIG, DEFAULT_PARAMS }
+export { CCTPService } from "./CCTPService"
+export { CCTP_CONFIG, ABIS } from "./constants"
+export { DEFAULT_PARAMS }
 export * from "./types"
 export * from "./encoding"
