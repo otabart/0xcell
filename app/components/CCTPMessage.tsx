@@ -5,6 +5,7 @@ import { useAccount } from "wagmi"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism"
 import Image from "next/image"
+import { Button } from "./ui/Button"
 
 // Sample contract code snippets
 const contractSnippets = {
@@ -90,22 +91,20 @@ export default function CCTPMessage() {
             { id: "decode", label: "2. Mint", icon: "/circle.svg" },
             { id: "process", label: "3. Play", icon: "/ethereum.png" },
           ].map((tab) => (
-            <button
+            <Button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id as "encode" | "decode" | "process")}
-              className={`py-2 w-24 cursor-pointer text-xs transition-all flex flex-col items-start ${
-                selectedTab === tab.id
-                  ? "text-white border-b-2 border-white"
-                  : "text-gray-500 hover:text-gray-300 border-b-2 border-transparent"
-              }`}
+              variant="tab"
+              active={selectedTab === tab.id}
+              className="py-2 w-24 text-left"
             >
-              <div className="flex items-center gap-2 uppercase tracking-wider mb-2 font-bold">
+              <div className="flex items-center gap-2 uppercase tracking-wider font-bold">
                 {tab.label}
                 <div className="border border-gray-700/50 rounded-full">
                   <Image src={tab.icon} alt={tab.label} width={16} height={16} />
                 </div>
               </div>
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -138,15 +137,15 @@ export default function CCTPMessage() {
       </div>
 
       {/* Send Transaction Button */}
-      <button
+      <Button
         onClick={sendCCTPMessage}
         disabled={!address || isProcessing}
-        className={`w-full p-3 uppercase cursor-pointer font-medium hover:bg-white/10 text-sm border text-left transition-all ${
-          !address ? "bg-gray-800 text-gray-500 cursor-not-allowed" : "text-white"
-        }`}
+        fullWidth
+        size="lg"
+        variant="primary"
       >
         {!address ? "🔗 Connect Wallet to Play" : isProcessing ? txStatus : "Send CCTP Message"}
-      </button>
+      </Button>
     </div>
   )
 }

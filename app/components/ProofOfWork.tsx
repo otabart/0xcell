@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { type Pattern } from "./CellSelector"
+import { Button } from "./ui/Button"
 
 interface PoWState {
   isHashing: boolean
@@ -256,15 +257,15 @@ export default function ProofOfWork({
     <div className="space-y-2">
       {/* Controls */}
       <div className="flex items-center justify-left py-4">
-        <button
+        <Button
           onClick={state.isHashing ? stopHashing : startHashing}
-          className={`
-            px-8 py-3 w-full text-sm border font-mono cursor-pointer hover:bg-white/10 uppercase tracking-wider transition-all
-            ${state.isHashing ? "text-red-400" : "text-white"}
-          `}
+          fullWidth
+          size="lg"
+          variant={state.isHashing ? "secondary" : "primary"}
+          className={state.isHashing ? "text-red-400" : ""}
         >
           {state.isHashing ? "Stop Mining" : "Start Mining"}
-        </button>
+        </Button>
       </div>
 
       {/* Hash Display */}

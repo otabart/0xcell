@@ -47,7 +47,7 @@ export class App extends React.Component<IAppProps, IAppState> {
           <div className="flex w-full items-center gap-4 justify-between">
             <Button
               id="playButton"
-              className="flex-1 text-left"
+              className="flex-1"
               label={this.state.isPlaying ? "Pause" : "Play"}
               onClick={this.togglePlay}
             />
