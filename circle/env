@@ -1,0 +1,5 @@
+# CCTP SDK Environment Variables
+
+# Your wallet private key (without 0x prefix)
+# This is used to sign transactions on both Ethereum Sepolia and Base Sepolia
+PRIVATE_KEY=3c87c697e60c1071bf145a059a917f84360900226d321ed08b7b07c4b8918ce5
