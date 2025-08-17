@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "0xCell - On-Chain Conway's Game of Life",
   description:
-    "Built on proof of work, cross-chain messaging, and generative art. Unlocking the possibilities of Circle's CCTP. Beyond payments, CCTP enables applications and games. Solana users can interact with Ethereum, passing arbitrary messages.",
+    "0xCell is an on-chain implementation of Conway’s Game of Life, built on three core technologies: Circle CCTP Messaging, Proof of Work (PoW), and Chainlink VRF.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
