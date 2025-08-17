@@ -6,7 +6,7 @@ Cross-chain Conway's Game of Life. Powered by CCTP.
 
 - **PoW → Cells**: Hash your way to unique patterns
 - **Any Chain**: Solana users playing on Ethereum? Yes.
-- **Zero UX**: Send tx. Watch cells evolve. Done.
+- **One Click**: Send tx. Watch cells evolve. Done.
 
 ## Why
 

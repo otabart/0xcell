@@ -1,5 +1,4 @@
 import { CCTPConfig } from "./types"
-import "dotenv/config"
 
 export const CCTP_CONFIG: CCTPConfig = {
   // Authentication
