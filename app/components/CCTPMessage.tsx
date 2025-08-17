@@ -6,18 +6,21 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism"
 import Image from "next/image"
 import { Button } from "./ui/Button"
+import { useCCTPTransfer } from "../hooks/useCCTPTransfer"
 
 // Sample contract code snippets
 const contractSnippets = {
-  encode: `// Solana: Burn USDC and attach game data
-const hookData = encodeGameData(amount * 10**6, userAddress, x, y);
+  encode: `// Ethereum: Burn USDC and attach game data
+const amount = 0.1 * 10**6; // 0.1 USDC (100,000 in 6 decimals)
+const hookData = encodeGameData(amount, userAddress, x, y);
 const tx = await cctpContract.depositForBurnWithHook(
-  amount, ETHEREUM_DOMAIN, hookRecipient, usdc.address, hookData
+  amount, BASE_DOMAIN, hookRecipient, usdc.address, hookData
 );`,
-  decode: `// CCTP Hook: Auto-execute when USDC arrives on Ethereum
+  decode: `// CCTP Hook: Auto-execute when USDC arrives on Base
 function handleReceiveMessage(uint32 sourceDomain, bytes32 sender, bytes calldata messageBody) external {
   (address token, uint256 amount, bytes memory hookData) = abi.decode(messageBody, (address, uint256, bytes));
   
+  // 0.1 USDC received, forward to game contract
   IGameCoreRecord(gameContract).initGame(hookData);
   IERC20(token).transfer(treasury, amount);
 }`,
@@ -35,51 +38,40 @@ function initGame(bytes calldata data) external returns (bool) {
 }`,
 }
 
+// Constants
+const GAME_CORE_RECORD_ADDRESS =
+  process.env.NEXT_PUBLIC_GAME_CORE_RECORD || "0x3e6d114f58980c7ff9D163F4757D4289cFbFd563" // Replace with actual deployed address
+const DEFAULT_COORDINATES = { x: 30, y: 30 }
+const DEFAULT_AMOUNT = 0.1 // 0.1 USDC
+
 export default function CCTPMessage() {
   const { address } = useAccount()
   const [selectedTab, setSelectedTab] = useState<"encode" | "decode" | "process">("encode")
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [txStatus, setTxStatus] = useState<string>("")
+  const { transfer, status, error, txHashes } = useCCTPTransfer()
 
-  // Demo data
-  // const demoData = {
-  //   usdcAmount: 100 * 1e6, // 100 USDC with 6 decimals
-  //   userAddress: address || "0x742d35Cc6634C0532925a3b844Bc9e7595f7Fd1f",
-  //   coordinates: { x: 30, y: 30 },
-  // }
+  // Status messages
+  const statusMessages = {
+    idle: "🎮 Send 0.1 USDC to Play",
+    approving: "🔄 Approving 0.1 USDC...",
+    burning: "🔥 Burning 0.1 USDC on Ethereum Sepolia...",
+    attesting: "⏳ Waiting for Circle attestation...",
+    minting: "✨ Minting 0.1 USDC on Base Sepolia...",
+    complete: "🏆 Welcome! You spawned at (30,30) as Level 1 player!",
+  }
 
-  // Generate encoded message
-  // const getEncodedMessage = (): string => {
-  //   const coordinates = (BigInt(demoData.coordinates.x) << 128n) | BigInt(demoData.coordinates.y)
-  //   return `0x${demoData.usdcAmount.toString(16).padStart(64, "0")}${demoData.userAddress
-  //     .slice(2)
-  //     .padStart(64, "0")}${coordinates.toString(16).padStart(64, "0")}`
-  // }
-
-  // Simulate sending CCTP message
+  // Send CCTP message using wagmi wallet
   const sendCCTPMessage = async () => {
     if (!address) return
 
-    setIsProcessing(true)
-    setTxStatus("🎯 Preparing to enter the game world...")
-
-    // Simulate CCTP V2 Hook steps with game flavor
-    const steps = [
-      "🔥  Burning 100 USDC on Solana...",
-      "⏳  Circle wizards verifying your journey...",
-      "✨  Materializing USDC on Ethereum...",
-      "🎮  Game portal detecting your arrival...",
-      "🎲  Rolling dice for your starting position...",
-      "🌟  Chainlink oracle blessing your fate...",
-      "🏆  Welcome! You spawned at (30,30) as Level 7 player!",
-    ]
-
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setTxStatus(steps[i])
+    try {
+      await transfer({
+        gameCoreRecordAddress: GAME_CORE_RECORD_ADDRESS,
+        coordinates: DEFAULT_COORDINATES,
+        amount: BigInt(DEFAULT_AMOUNT * 1e6), // 100 USDC
+      })
+    } catch (err) {
+      console.error("Transfer failed:", err)
     }
-
-    setIsProcessing(false)
   }
 
   return (
@@ -139,13 +131,52 @@ export default function CCTPMessage() {
       {/* Send Transaction Button */}
       <Button
         onClick={sendCCTPMessage}
-        disabled={!address || isProcessing}
+        disabled={!address || status !== "idle"}
         fullWidth
         size="lg"
         variant="primary"
       >
-        {!address ? "🔗 Connect Wallet to Play" : isProcessing ? txStatus : "Send CCTP Message"}
+        {!address ? "🔗 Connect Wallet to Play" : statusMessages[status]}
       </Button>
+
+      {/* Error Display */}
+      {error && (
+        <div className="p-3 border border-red-500/50 rounded bg-red-500/10 text-red-400 text-sm">
+          ❌ {error}
+        </div>
+      )}
+
+      {/* Transaction Hashes */}
+      {(txHashes.burn || txHashes.mint) && (
+        <div className="p-3 border border-green-500/50 uppercase font-mono rounded bg-green-500/10 text-green-400 text-sm space-y-1">
+          {txHashes.burn && (
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-green-400">🔥 Burn </span>
+              <a
+                href={`https://sepolia.etherscan.io/tx/${txHashes.burn}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-green-300"
+              >
+                {txHashes.burn}
+              </a>
+            </div>
+          )}
+          {txHashes.mint && (
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-green-400">💰 Mint </span>
+              <a
+                href={`https://sepolia.basescan.org/tx/${txHashes.mint}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-green-300"
+              >
+                {txHashes.mint}
+              </a>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

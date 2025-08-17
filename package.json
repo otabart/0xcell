@@ -13,6 +13,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.85.3",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "axios": "^1.11.0",
     "connectkit": "^1.9.1",
     "next": "15.4.6",
     "react": "19.1.0",
