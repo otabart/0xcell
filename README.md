@@ -8,12 +8,6 @@ A cross-chain Game of Life powered by Circle's CCTP, where proof-of-work mining 
 - **Any Chain**: Solana users playing on Ethereum? Yes.
 - **One Click**: Send tx. Watch cells evolve. Done.
 
-## Why
-
-CCTP isn't just a bridge. It's cross-chain messaging infrastructure.
-
-We're proving it.
-
 ## How
 
 ```
