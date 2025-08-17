@@ -248,6 +248,15 @@ export default function CCTPMessage({ minedHashValue, onStatusChange }: CCTPMess
       {error && (
         <div className="p-3 border border-red-500/50 rounded bg-red-500/10 text-red-400 text-sm break-words">
           ❌ {error}
+          {error.includes("Base Sepolia") && (
+            <div className="mt-2 text-xs opacity-75">
+              💡 Tip: Add Base Sepolia to MetaMask manually if auto-switch fails:
+              <br />• Network Name: Base Sepolia
+              <br />• RPC URL: https://sepolia.base.org
+              <br />• Chain ID: 84532
+              <br />• Currency Symbol: ETH
+            </div>
+          )}
         </div>
       )}
 

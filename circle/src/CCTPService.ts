@@ -159,7 +159,7 @@ export class CCTPService {
     console.log("💰 Minting USDC on Base Sepolia...")
 
     const hash = await this.baseSepoliaClient.sendTransaction({
-      // account: this.account,
+      account: this.account,
       chain: baseSepolia,
       to: this.config.baseSepoliaCCTPHookWrapper as `0x${string}`,
       data: encodeFunctionData({

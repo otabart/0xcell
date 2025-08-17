@@ -107,6 +107,17 @@ export function useCCTPTransfer() {
         const onCorrectChain = await ensureChain(sepolia.id, "Ethereum Sepolia")
         if (!onCorrectChain) return
 
+        // Wait for chain switch to complete
+        await new Promise((resolve) => setTimeout(resolve, 1500))
+
+        // Verify we're on the correct chain
+        const verifiedChainId = await walletClient.getChainId()
+        if (verifiedChainId !== sepolia.id) {
+          setError("Please switch to Ethereum Sepolia network to start the transfer.")
+          setStatus("idle")
+          return
+        }
+
         setStatus("approving")
 
         // Step 1: Approve USDC using SDK constants
@@ -167,6 +178,17 @@ export function useCCTPTransfer() {
         // Step 4: Switch to Base Sepolia and mint
         const onBaseSepolia = await ensureChain(baseSepolia.id, "Base Sepolia")
         if (!onBaseSepolia) return
+
+        // Wait a bit more for chain switch to complete
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+
+        // Double-check we're on the right chain
+        const baseChainId = await walletClient.getChainId()
+        if (baseChainId !== baseSepolia.id) {
+          setError("Failed to switch to Base Sepolia. Please switch manually and try again.")
+          setStatus("idle")
+          return
+        }
 
         setStatus("minting")
 
