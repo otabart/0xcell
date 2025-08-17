@@ -3,7 +3,6 @@
 import { ConnectKitButton } from "connectkit"
 import { useState, useEffect } from "react"
 import GameOfLife from "./components/GameOfLife"
-import { type Pattern } from "./components/CellSelector"
 import ProofOfWork from "./components/ProofOfWork"
 import CCTPMessage from "./components/CCTPMessage"
 import StepStatus from "./components/StepStatus"
@@ -52,8 +51,55 @@ export default function Home() {
             enables applications and games.
             <br />
             <span className="text-orange-400">Solana</span> users can interact with{" "}
-            <span className="text-blue-400">Ethereum</span>, passing{" "}
-            <span className="text-purple-300">arbitrary messages</span>.
+            <span className="text-blue-400">Ethereum</span>, passing arbitrary messages .
+          </p>
+          <p className="py-6">
+            To play the game, you&apos;ll need to get some USDC from the{" "}
+            <a
+              href="https://faucet.circle.com/"
+              target="_blank"
+              className="text-cyan-400 hover:text-cyan-300 underline"
+            >
+              Circle faucet
+            </a>
+            .
+          </p>
+          <hr className="border-gray-700/50" />
+          <p className="flex justify-between font-mono items-center">
+            <span>
+              Built by{" "}
+              <a
+                href="https://x.com/ashu_mest"
+                target="_blank"
+                className="text-yellow-400 hover:text-yellow-300 hover:underline font-semibold"
+              >
+                Ashu
+              </a>
+              ,{"  "}
+              <a
+                href="https://github.com/Attens1423"
+                target="_blank"
+                className="text-yellow-400 hover:text-yellow-300 hover:underline font-semibold"
+              >
+                Attens
+              </a>
+              , and{"  "}
+              <a
+                href="https://x.com/MonsterSea7"
+                target="_blank"
+                className="text-yellow-400 hover:text-yellow-300 hover:underline font-semibold"
+              >
+                Yiran
+              </a>
+              .
+            </span>
+            <a
+              href="https://github.com/0xashu/0xcell"
+              target="_blank"
+              className="text-blue-400 hover:text-blue-300 hover:underline font-semibold"
+            >
+              GitHub
+            </a>
           </p>
         </div>
 
