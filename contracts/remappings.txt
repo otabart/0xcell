@@ -1,0 +1,8 @@
+@openzeppelin/=lib/openzeppelin-contracts/
+@chainlink/=lib/chainlink-brownie-contracts/contracts/src/v0.8/
+forge-std/=lib/forge-std/src/
+@cctp-examples/=lib/evm-cctp-contracts/src/examples/
+@cctp-interfaces/=lib/evm-cctp-contracts/src/interfaces/
+@cctp-messages/=lib/evm-cctp-contracts/src/messages/
+@cctp-roles/=lib/evm-cctp-contracts/src/roles/
+@openzeppelin-v6/=lib/evm-cctp-contracts/lib/openzeppelin-contracts/contracts/ 

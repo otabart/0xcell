@@ -8,7 +8,7 @@ export const CCTP_CONFIG: CCTPConfig = {
   ethereumSepoliaUSDC: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
   ethereumSepoliaTokenMessenger: "0x8fe6b999dc680ccfdd5bf7eb0974218be2542daa",
   baseSepoliaMessageTransmitter: "0xe737e5cebeeba77efe34d4aa090756590b1ce275",
-  baseSepoliaCCTPHookWrapper: "0x3e6d114f58980c7ff9D163F4757D4289cFbFd563",
+  baseSepoliaCCTPHookWrapper: "0x56492f2A6509ca0F5aAe60db453846fd089c0211",
 
   // Domain IDs
   ethereumSepoliaDomain: 0,
