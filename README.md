@@ -4,6 +4,13 @@ A cross-chain Game of Life powered by Circle's CCTP. Mine unique cellular patter
 
 > **Beyond Payments**: Circle's CCTP isn't just a payment protocol - it's a powerful primitive for building any cross-chain application or game.
 
+
+
+https://github.com/user-attachments/assets/8f4433cc-254a-4848-a3b0-0d97770fec0d
+
+
+
+
 ## 🎮 What is 0xCell?
 
 - **PoW → Cells**: Hash your way to unique patterns
