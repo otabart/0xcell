@@ -354,11 +354,11 @@ export default function GameOfLife({ minedHash, onGameStatusChange }: GameOfLife
       <div className="flex justify-between items-center text-sm font-mono">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-blue-500"></div>
+            <div className="w-3 h-3 bg-cyan-500"></div>
             <span className="text-gray-400">{currentCounts.player1}</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-red-500"></div>
+            <div className="w-3 h-3 bg-amber-500"></div>
             <span className="text-gray-400">{currentCounts.player2}</span>
           </div>
         </div>
@@ -387,8 +387,8 @@ export default function GameOfLife({ minedHash, onGameStatusChange }: GameOfLife
         )}
         {phase === "complete" && (
           <p className="text-sm font-mono">
-            {winner === "player" && <span className="text-blue-500">you win</span>}
-            {winner === "bot" && <span className="text-red-500">bot wins</span>}
+            {winner === "player" && <span className="text-blue-300">you win</span>}
+            {winner === "bot" && <span className="text-red-300">bot wins</span>}
             {winner === "tie" && <span className="text-gray-400">tie</span>}
           </p>
         )}
