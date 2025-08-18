@@ -1,6 +1,8 @@
 # 0xCell 🧬
 
-A cross-chain Game of Life powered by Circle's CCTP, where proof-of-work mining generates unique cellular automata patterns.
+A cross-chain Game of Life powered by Circle's CCTP. Mine unique cellular patterns through proof-of-work simulation, bringing Ethereum games to Solana users and beyond.
+
+> **Beyond Payments**: Circle's CCTP isn't just a payment protocol - it's a powerful primitive for building any cross-chain application or game.
 
 ## 🎮 What is 0xCell?
 
